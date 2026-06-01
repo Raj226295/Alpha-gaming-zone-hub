@@ -5,12 +5,64 @@ import vrPod from '../assets/gaming/vr-pod.svg'
 import racingRig from '../assets/gaming/racing-rig.svg'
 import galleryClub from '../assets/gaming/gallery-club.svg'
 
-export const viewTabs = [
-  { id: 'home', label: 'Home' },
-  { id: 'booking', label: 'Book Slot' },
-  { id: 'tournaments', label: 'Tournaments' },
-  { id: 'dashboard', label: 'User Dashboard' },
-  { id: 'admin', label: 'Admin Dashboard' },
+export const primaryNavItems = [
+  {
+    id: 'home',
+    label: 'Home',
+    summary: 'Hero section and featured games',
+    icon: 'home',
+  },
+  {
+    id: 'setups',
+    label: 'Gaming Setup',
+    summary: 'PS5, PC, VR, and racing bays',
+    icon: 'setups',
+  },
+  {
+    id: 'booking',
+    label: 'Book Slot',
+    summary: 'Select date, time, and checkout',
+    icon: 'booking',
+  },
+  {
+    id: 'tournaments',
+    label: 'Tournament',
+    summary: 'Upcoming events and registration',
+    icon: 'tournaments',
+  },
+  {
+    id: 'dashboard',
+    label: 'Account',
+    summary: 'Profile, wallet, and history',
+    icon: 'account',
+  },
+]
+
+export const featuredGames = [
+  {
+    title: 'Valorant Neon Clash',
+    genre: '5v5 tactical',
+    detail: 'Stage-ready scrims with shoutcast energy and low-latency rigs.',
+    accent: 'Night ranked',
+  },
+  {
+    title: 'EA FC Lounge Finals',
+    genre: 'Competitive football',
+    detail: 'DualSense bays, couch rivalries, and instant replay moments.',
+    accent: 'Crowd favorite',
+  },
+  {
+    title: 'Beat Saber After Dark',
+    genre: 'VR rhythm',
+    detail: 'Immersion pods tuned for motion-heavy party sessions and clips.',
+    accent: 'Creator pick',
+  },
+  {
+    title: 'Gran Turismo Apex Run',
+    genre: 'Sim racing',
+    detail: 'Force-feedback cockpit laps with ghost mode and leaderboard heat.',
+    accent: 'Elite circuit',
+  },
 ]
 
 export const heroStats = [

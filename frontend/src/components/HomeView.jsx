@@ -1,130 +1,73 @@
 import SectionHeading from './SectionHeading'
-import alphaCrest from '../assets/gaming/alpha-crest.svg'
+import heroAlphaBanner from '../assets/gaming/hero-alpha-banner.png'
 
 function HomeView({
   heroStats,
-  setups,
-  pricing,
+  featuredGames,
   tournaments,
   offers,
   gallery,
   contact,
   onNavigate,
-  onSelectSetup,
 }) {
   return (
     <div className="view-stack">
-      <section className="hero-panel glass-panel">
-        <div className="hero-copy">
-          <span className="section-eyebrow">Futuristic gaming lounge</span>
-          <div className="hero-logo-row">
-            <img src={alphaCrest} alt="Alpha Gaming logo" className="hero-brand-mark" />
-            <div className="hero-brand-copy">
-              <span>Play</span>
-              <span>Compete</span>
-              <span>Conquer</span>
-            </div>
+      <section className="hero-poster-panel">
+        <div className="hero-poster-frame">
+          <img
+            src={heroAlphaBanner}
+            alt="Alpha Gaming Zone banner showcasing PS5 room, PC gaming, VR gaming, racing simulator, private room, and multiplayer cabin."
+            className="hero-poster-image"
+          />
+        </div>
+
+        <div className="hero-poster-actions">
+          <div className="hero-poster-copy">
+            <span className="section-eyebrow">Signature banner</span>
+            <h2>The zone of legends is live at Alpha Gaming Zone.</h2>
+            <p>
+              Jump into premium setups, instant slot booking, and high-energy tournaments
+              from one esports-first experience.
+            </p>
           </div>
-          <h2>Premium booking, esports nights, and late-hour neon energy in one arena.</h2>
-          <p>
-            Launch console sessions, VR adventures, creator nights, and tournament
-            registrations from a single high-end booking experience built for players who
-            care about atmosphere as much as performance.
-          </p>
+
           <div className="hero-actions">
             <button type="button" className="primary-button" onClick={() => onNavigate('booking')}>
-              Book Slot
+              Book Now
             </button>
-            <button
-              type="button"
-              className="secondary-button"
-              onClick={() => onNavigate('tournaments')}
-            >
-              Upcoming Tournaments
+            <button type="button" className="secondary-button" onClick={() => onNavigate('setups')}>
+              View Setups
             </button>
-          </div>
-          <div className="hero-stats">
-            {heroStats.map((stat) => (
-              <div key={stat.label} className="stat-pill">
-                <strong>{stat.value}</strong>
-                <span>{stat.label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="hero-visual">
-          <img src={gallery[0].image} alt="Premium gaming lounge hero setup" />
-          <img src={alphaCrest} alt="" aria-hidden="true" className="hero-banner-logo" />
-          <div className="floating-card card-left">
-            <span>Today&apos;s hot lane</span>
-            <strong>Racing Simulator</strong>
-            <p>Only 6 prime slots left</p>
-          </div>
-          <div className="floating-card card-right">
-            <span>Tonight at 8 PM</span>
-            <strong>Valorant Neon Clash</strong>
-            <p>Stage check-in opens in 2 hours</p>
           </div>
         </div>
       </section>
 
-      <section className="section-block">
-        <SectionHeading
-          eyebrow="Setup showcase"
-          title="Choose the arena that matches your play style."
-          description="Every bay is tuned with lounge lighting, responsive peripherals, and a premium comfort-first layout."
-        />
-        <div className="setup-grid">
-          {setups.map((setup) => (
-            <article key={setup.id} className="glass-card setup-card">
-              <img src={setup.image} alt={setup.name} className="setup-image" />
-              <div className="setup-card-content">
-                <div className="card-topline">
-                  <span className="accent-badge">{setup.badge}</span>
-                  <span className="muted-copy">{setup.availability}</span>
-                </div>
-                <h3>{setup.name}</h3>
-                <p>{setup.headline}</p>
-                <ul className="feature-list">
-                  {setup.features.map((feature) => (
-                    <li key={feature}>{feature}</li>
-                  ))}
-                </ul>
-                <div className="card-footer">
-                  <strong>Rs.{setup.price}/hr</strong>
-                  <button
-                    type="button"
-                    className="text-button"
-                    onClick={() => {
-                      onSelectSetup(setup.id)
-                      onNavigate('booking')
-                    }}
-                  >
-                    Reserve this setup
-                  </button>
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
+      <section className="hero-stats-strip">
+        {heroStats.map((stat) => (
+          <div key={stat.label} className="stat-pill">
+            <strong>{stat.value}</strong>
+            <span>{stat.label}</span>
+          </div>
+        ))}
       </section>
 
       <section className="section-block">
         <SectionHeading
-          eyebrow="Hourly pricing"
-          title="Flexible packages for walk-ins, squads, and grind sessions."
-          description="Transparent pricing with clear perks, controller add-ons, and tournament-ready extras."
+          eyebrow="Featured games"
+          title="Headline experiences built for couch rivals, ranked grinders, and spectacle nights."
+          description="These are the titles and formats that define the Alpha Gaming Zone energy right now."
         />
-        <div className="pricing-grid">
-          {pricing.map((plan) => (
-            <article key={plan.name} className="glass-card pricing-card">
-              <span className="accent-badge">{plan.highlight}</span>
-              <h3>{plan.name}</h3>
-              <strong className="pricing-rate">{plan.rate}</strong>
-              <p>{plan.summary}</p>
-              <button type="button" className="secondary-button" onClick={() => onNavigate('booking')}>
-                Book Slot
+        <div className="featured-game-grid">
+          {featuredGames.map((game) => (
+            <article key={game.title} className="glass-card featured-game-card">
+              <div className="card-topline">
+                <span className="accent-badge">{game.accent}</span>
+                <span className="muted-copy">{game.genre}</span>
+              </div>
+              <h3>{game.title}</h3>
+              <p>{game.detail}</p>
+              <button type="button" className="text-button" onClick={() => onNavigate('setups')}>
+                Match with a setup
               </button>
             </article>
           ))}

@@ -2,6 +2,7 @@ import { startTransition, useDeferredValue, useState } from 'react'
 import './App.css'
 import Navigation from './components/Navigation'
 import HomeView from './components/HomeView'
+import SetupView from './components/SetupView'
 import BookingView from './components/BookingView'
 import TournamentView from './components/TournamentView'
 import UserDashboardView from './components/UserDashboardView'
@@ -11,6 +12,7 @@ import {
   contactDetails,
   coupons,
   defaultProfile,
+  featuredGames,
   gallery,
   heroStats,
   hourlyPricing,
@@ -207,6 +209,17 @@ function App() {
   }
 
   function renderView() {
+    if (deferredView === 'setups') {
+      return (
+        <SetupView
+          setups={setups}
+          pricing={hourlyPricing}
+          onNavigate={handleNavigate}
+          onSelectSetup={(setupId) => handleBookingField('setupId', setupId)}
+        />
+      )
+    }
+
     if (deferredView === 'booking') {
       return (
         <BookingView
@@ -266,14 +279,12 @@ function App() {
     return (
       <HomeView
         heroStats={heroStats}
-        setups={setups}
-        pricing={hourlyPricing}
+        featuredGames={featuredGames}
         tournaments={tournaments}
         offers={offers}
         gallery={gallery}
         contact={contactDetails}
         onNavigate={handleNavigate}
-        onSelectSetup={(setupId) => handleBookingField('setupId', setupId)}
       />
     )
   }
@@ -282,7 +293,7 @@ function App() {
     <div className="app-shell">
       <div className="ambient ambient-left"></div>
       <div className="ambient ambient-right"></div>
-      <Navigation activeView={activeView} onNavigate={handleNavigate} />
+      <Navigation activeView={activeView} onNavigate={handleNavigate} profile={profile} />
       <main>{renderView()}</main>
     </div>
   )

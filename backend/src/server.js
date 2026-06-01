@@ -1,4 +1,6 @@
 import { createServer } from 'node:http'
+import { Buffer } from 'node:buffer'
+import process from 'node:process'
 import { routeRequest } from './routes/router.js'
 import { sendJson } from './utils/response.js'
 
