@@ -4,6 +4,10 @@ import pcBattlestation from '../assets/gaming/pc-battlestation.svg'
 import vrPod from '../assets/gaming/vr-pod.svg'
 import racingRig from '../assets/gaming/racing-rig.svg'
 import galleryClub from '../assets/gaming/gallery-club.svg'
+import featuredValorant from '../assets/gaming/featured-valorant.jpeg'
+import featuredEaFc from '../assets/gaming/featured-eafc.jpeg'
+import featuredBeatSaber from '../assets/gaming/featured-beatsaber.jpeg'
+import featuredGranTurismo from '../assets/gaming/featured-granturismo.jpeg'
 
 export const primaryNavItems = [
   {
@@ -44,24 +48,28 @@ export const featuredGames = [
     genre: '5v5 tactical',
     detail: 'Stage-ready scrims with shoutcast energy and low-latency rigs.',
     accent: 'Night ranked',
+    image: featuredValorant,
   },
   {
     title: 'EA FC Lounge Finals',
     genre: 'Competitive football',
     detail: 'DualSense bays, couch rivalries, and instant replay moments.',
     accent: 'Crowd favorite',
+    image: featuredEaFc,
   },
   {
     title: 'Beat Saber After Dark',
     genre: 'VR rhythm',
     detail: 'Immersion pods tuned for motion-heavy party sessions and clips.',
     accent: 'Creator pick',
+    image: featuredBeatSaber,
   },
   {
     title: 'Gran Turismo Apex Run',
     genre: 'Sim racing',
     detail: 'Force-feedback cockpit laps with ghost mode and leaderboard heat.',
     accent: 'Elite circuit',
+    image: featuredGranTurismo,
   },
 ]
 

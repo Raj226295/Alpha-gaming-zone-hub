@@ -60,15 +60,18 @@ function HomeView({
         <div className="featured-game-grid">
           {featuredGames.map((game) => (
             <article key={game.title} className="glass-card featured-game-card">
-              <div className="card-topline">
-                <span className="accent-badge">{game.accent}</span>
-                <span className="muted-copy">{game.genre}</span>
+              <img src={game.image} alt={game.title} className="featured-game-image" />
+              <div className="featured-game-content">
+                <div className="card-topline">
+                  <span className="accent-badge">{game.accent}</span>
+                  <span className="muted-copy">{game.genre}</span>
+                </div>
+                <h3>{game.title}</h3>
+                <p>{game.detail}</p>
+                <button type="button" className="text-button" onClick={() => onNavigate('setups')}>
+                  Match with a setup
+                </button>
               </div>
-              <h3>{game.title}</h3>
-              <p>{game.detail}</p>
-              <button type="button" className="text-button" onClick={() => onNavigate('setups')}>
-                Match with a setup
-              </button>
             </article>
           ))}
         </div>

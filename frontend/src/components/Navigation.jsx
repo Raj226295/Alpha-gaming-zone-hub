@@ -1,5 +1,5 @@
 import { primaryNavItems } from '../data/siteData'
-import alphaCrest from '../assets/gaming/alpha-crest.svg'
+import alphaLogoPremium from '../assets/gaming/alpha-logo-premium.png'
 
 const promoMessages = [
   'PS5 Room bookings starting from Rs.499/hr',
@@ -76,11 +76,13 @@ function Navigation({ activeView, onNavigate, profile }) {
 
       <header className="site-header">
         <div className="brand-lockup">
-          <img src={alphaCrest} alt="Alpha Gaming crest" className="brand-logo" />
+          <div className="brand-mark-shell">
+            <img src={alphaLogoPremium} alt="Alpha Gaming logo" className="brand-logo" />
+          </div>
           <div className="brand-copy">
             <p className="brand-kicker">Alpha gaming zone</p>
             <h1>Alpha Gaming Zone</h1>
-            <p className="brand-subcopy">Premium lounge booking, esports events, and high-end gaming setups.</p>
+            <p className="brand-subcopy">Premium lounge booking, esports events, and immersive gaming setups.</p>
           </div>
         </div>
 
