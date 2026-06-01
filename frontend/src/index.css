@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+:root {
+  --bg-primary: #273b40;
+  --bg-secondary: #1f1f1f;
+  --accent: #2b8c8c;
+  --highlight: #cae9ea;
+  --text-border: #3c474b;
+  --surface: rgba(24, 31, 33, 0.72);
+  --surface-strong: rgba(31, 31, 31, 0.9);
+  --surface-soft: rgba(202, 233, 234, 0.08);
+  --border-strong: rgba(202, 233, 234, 0.14);
+  --border-bright: rgba(43, 140, 140, 0.48);
+  --shadow-deep: 0 24px 80px rgba(5, 10, 11, 0.42);
+  --shadow-glow: 0 0 0 1px rgba(202, 233, 234, 0.08), 0 0 40px rgba(43, 140, 140, 0.18);
+  --radius: 16px;
+  --radius-xl: 28px;
+  --font-body: 'Space Grotesk', 'Segoe UI', sans-serif;
+  --font-heading: 'Oxanium', 'Trebuchet MS', sans-serif;
+  font-family: var(--font-body);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--highlight);
+  background:
+    radial-gradient(circle at top left, rgba(43, 140, 140, 0.22), transparent 35%),
+    radial-gradient(circle at bottom right, rgba(202, 233, 234, 0.12), transparent 32%),
+    linear-gradient(145deg, #111718 0%, #1c2729 40%, #101416 100%);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 20% 0%, rgba(43, 140, 140, 0.18), transparent 25%),
+    radial-gradient(circle at 85% 10%, rgba(202, 233, 234, 0.12), transparent 22%),
+    linear-gradient(180deg, #0d1213 0%, var(--bg-primary) 58%, #0f1415 100%);
+  color: var(--highlight);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+p,
+figure {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+}

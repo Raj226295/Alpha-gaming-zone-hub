@@ -1,0 +1,38 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="hero-bg" x1="140" y1="70" x2="1080" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#355157"/>
+      <stop offset="1" stop-color="#111718"/>
+    </linearGradient>
+    <linearGradient id="hero-glow" x1="310" y1="180" x2="910" y2="620" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2B8C8C"/>
+      <stop offset="1" stop-color="#CAE9EA"/>
+    </linearGradient>
+    <filter id="hero-shadow" x="0" y="0" width="1200" height="900" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feGaussianBlur stdDeviation="24"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="900" rx="64" fill="url(#hero-bg)"/>
+  <circle cx="250" cy="170" r="120" fill="#2B8C8C" fill-opacity="0.24" filter="url(#hero-shadow)"/>
+  <circle cx="1000" cy="240" r="130" fill="#CAE9EA" fill-opacity="0.16" filter="url(#hero-shadow)"/>
+  <circle cx="600" cy="770" r="200" fill="#2B8C8C" fill-opacity="0.12" filter="url(#hero-shadow)"/>
+  <rect x="118" y="204" width="964" height="500" rx="42" fill="#1B2325" stroke="#35565D" stroke-width="3"/>
+  <path d="M118 654H1082" stroke="#2B8C8C" stroke-opacity="0.4" stroke-width="3"/>
+  <g opacity="0.8">
+    <rect x="188" y="266" width="228" height="164" rx="18" fill="#273B40" stroke="#2B8C8C" stroke-width="4"/>
+    <rect x="478" y="236" width="244" height="184" rx="18" fill="#273B40" stroke="#CAE9EA" stroke-width="4"/>
+    <rect x="786" y="286" width="216" height="150" rx="18" fill="#273B40" stroke="#2B8C8C" stroke-width="4"/>
+    <rect x="248" y="442" width="104" height="18" rx="9" fill="#2B8C8C"/>
+    <rect x="550" y="440" width="98" height="18" rx="9" fill="#CAE9EA"/>
+    <rect x="840" y="448" width="104" height="18" rx="9" fill="#2B8C8C"/>
+  </g>
+  <path d="M296 554L232 620H380L296 554Z" fill="#233237" stroke="#2B8C8C" stroke-width="4"/>
+  <path d="M602 516L544 620H690L602 516Z" fill="#233237" stroke="#CAE9EA" stroke-width="4"/>
+  <path d="M894 560L836 620H954L894 560Z" fill="#233237" stroke="#2B8C8C" stroke-width="4"/>
+  <rect x="188" y="704" width="824" height="18" rx="9" fill="url(#hero-glow)" fill-opacity="0.76"/>
+  <path d="M262 314H344" stroke="#CAE9EA" stroke-width="5" stroke-linecap="round"/>
+  <path d="M552 294H648" stroke="#2B8C8C" stroke-width="5" stroke-linecap="round"/>
+  <path d="M842 334H946" stroke="#CAE9EA" stroke-width="5" stroke-linecap="round"/>
+  <text x="126" y="136" fill="#CAE9EA" font-family="Verdana, sans-serif" font-size="42" font-weight="700" letter-spacing="8">ALPHA GAME ZONE</text>
+  <text x="126" y="178" fill="#7EC9C9" font-family="Verdana, sans-serif" font-size="20" letter-spacing="4">FUTURISTIC LOUNGE // 4K CONSOLES // VR // ESPORTS</text>
+</svg>

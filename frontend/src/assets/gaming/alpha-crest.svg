@@ -1,0 +1,27 @@
+<svg width="860" height="640" viewBox="0 0 860 640" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="crest-steel" x1="214" y1="36" x2="640" y2="574" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F4F9FA"/>
+      <stop offset="0.45" stop-color="#A4B8BD"/>
+      <stop offset="1" stop-color="#4B5A5E"/>
+    </linearGradient>
+    <linearGradient id="crest-teal" x1="246" y1="152" x2="624" y2="520" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#CAE9EA"/>
+      <stop offset="1" stop-color="#2B8C8C"/>
+    </linearGradient>
+  </defs>
+  <path d="M438 36L680 110L638 446L438 596L236 446L196 110L438 36Z" fill="#0E1517" stroke="url(#crest-steel)" stroke-width="14"/>
+  <path d="M438 86L626 142L592 420L438 532L284 420L248 142L438 86Z" fill="#101A1D" stroke="url(#crest-teal)" stroke-width="10"/>
+  <path d="M290 228L350 148L408 134L358 212L414 244L344 258L290 228Z" fill="url(#crest-steel)"/>
+  <path d="M310 230L368 250L334 362L272 374L310 230Z" fill="#58686D"/>
+  <path d="M354 142L444 198L374 216L354 142Z" fill="#C9D7DB"/>
+  <path d="M376 246L472 182L444 294L388 362L376 246Z" fill="#74868B"/>
+  <path d="M266 198L334 136L286 128L224 166L266 198Z" fill="#809399"/>
+  <circle cx="282" cy="164" r="13" fill="#FF3A3A"/>
+  <path d="M444 78L642 144L608 420L438 544V78H444Z" fill="url(#crest-steel)" fill-opacity="0.2"/>
+  <path d="M454 78L666 78L706 612H534L506 516H352L318 612H150L392 78H454ZM446 226L382 384H504L446 226Z" fill="url(#crest-steel)"/>
+  <path d="M446 200L408 304H482L446 200Z" fill="#081213"/>
+  <path d="M184 402H708" stroke="url(#crest-teal)" stroke-width="12" stroke-linecap="round"/>
+  <text x="184" y="500" fill="url(#crest-steel)" font-family="Verdana, sans-serif" font-size="138" font-weight="700" letter-spacing="6">ALPHA</text>
+  <text x="266" y="592" fill="url(#crest-teal)" font-family="Verdana, sans-serif" font-size="82" font-weight="700" letter-spacing="18">GAMING</text>
+</svg>
