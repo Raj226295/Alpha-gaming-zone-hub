@@ -148,49 +148,33 @@ function HomeView({
         </div>
       </section>
 
-      <section id="pricing-section" className="section-block">
-        <div className="glass-panel alpha-pricing-panel">
+      <section className="section-block alpha-discover-section">
+        <div className="glass-panel alpha-discover-panel">
           <SectionHeading
-            eyebrow="Pricing"
-            title="Transparent premium pricing for every style of play."
-            description="Choose your lane, lock your time, and move from discovery to booking in one sleek flow."
-            align="center"
+            eyebrow="Explore on demand"
+            title="Pricing and gallery stay one tap away, not dumped onto the homepage."
+            description="This keeps the first experience cleaner while still giving quick access when someone wants rates or venue visuals."
           />
 
-          <div className="alpha-pricing-table">
-            {pricingMatrix.map((plan) => (
-              <article key={plan.name} className="alpha-pricing-row">
-                <div>
-                  <h3>{plan.name}</h3>
-                  <p>{plan.summary}</p>
-                </div>
-                <strong>{plan.rate}</strong>
-              </article>
-            ))}
+          <div className="alpha-discover-grid">
+            <article className="glass-card alpha-discover-card">
+              <span className="accent-badge">{pricingMatrix.length} pricing lanes</span>
+              <h3>Pricing</h3>
+              <p>Open the dedicated pricing screen for hourly rates, bundle plans, and booking-ready details.</p>
+              <button type="button" className="secondary-button" onClick={() => onNavigate('pricing')}>
+                Open Pricing
+              </button>
+            </article>
+
+            <article className="glass-card alpha-discover-card">
+              <span className="accent-badge">{gallery.length} gallery shots</span>
+              <h3>Gallery</h3>
+              <p>See the full lounge visuals in a separate gallery view instead of stretching the homepage longer.</p>
+              <button type="button" className="secondary-button" onClick={() => onNavigate('gallery')}>
+                Open Gallery
+              </button>
+            </article>
           </div>
-
-          <div className="alpha-pricing-cta">
-            <button type="button" className="secondary-button" onClick={() => onNavigate('setups')}>
-              View Full Pricing
-            </button>
-          </div>
-        </div>
-      </section>
-
-      <section id="gallery-section" className="section-block">
-        <SectionHeading
-          eyebrow="Gallery"
-          title="A cinematic gaming zone that looks as sharp on camera as it feels in person."
-          description="Browse tournament moments, premium setups, and lounge corners built for standout nights."
-        />
-
-        <div className="alpha-gallery-grid">
-          {gallery.map((item) => (
-            <figure key={item.title} className="alpha-gallery-tile">
-              <img src={item.image} alt={item.title} />
-              <figcaption>{item.title}</figcaption>
-            </figure>
-          ))}
         </div>
       </section>
 
@@ -240,8 +224,8 @@ function HomeView({
         <div className="glass-panel alpha-contact-panel">
           <SectionHeading
             eyebrow="Contact"
-            title="Reserve your next session, ping the team, or navigate straight to the arena."
-            description="Everything you need to connect with Alpha Gaming is right here, from WhatsApp booking to maps and opening hours."
+            title="Book your slot or find the arena fast."
+            description="Reach the team, get directions, and check timings without digging through long blocks of text."
           />
 
           <div className="alpha-contact-actions">
@@ -267,7 +251,7 @@ function HomeView({
           </div>
 
           <div className="alpha-contact-grid">
-            <article className="alpha-contact-card">
+            <article className="alpha-contact-card alpha-contact-card-wide">
               <span className="label-copy">Address</span>
               <strong>{contact.address}</strong>
               <p>{contact.mapNote}</p>
@@ -276,13 +260,21 @@ function HomeView({
             <article className="alpha-contact-card">
               <span className="label-copy">Opening hours</span>
               <strong>{contact.hours}</strong>
-              <p>{contact.hoursList.join(' | ')}</p>
+              <div className="alpha-contact-lines">
+                {contact.hoursList.map((entry) => (
+                  <span key={entry}>{entry}</span>
+                ))}
+              </div>
             </article>
 
             <article className="alpha-contact-card">
               <span className="label-copy">Call us</span>
-              <strong>{contact.phone}</strong>
-              <p>{contact.email}</p>
+              <a className="alpha-contact-link" href={contact.phoneHref}>
+                {contact.phone}
+              </a>
+              <a className="alpha-contact-link alpha-contact-email" href={`mailto:${contact.email}`}>
+                {contact.email}
+              </a>
             </article>
           </div>
         </div>

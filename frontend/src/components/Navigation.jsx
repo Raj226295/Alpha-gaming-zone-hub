@@ -5,8 +5,8 @@ const navItems = [
   { id: 'gaming-setup', label: 'Gaming Setup', view: 'home', sectionId: 'gaming-setups' },
   { id: 'book-slot', label: 'Book Slot', view: 'booking' },
   { id: 'tournament', label: 'Tournament', view: 'home', sectionId: 'tournament-section' },
-  { id: 'pricing', label: 'Pricing', view: 'home', sectionId: 'pricing-section' },
-  { id: 'gallery', label: 'Gallery', view: 'home', sectionId: 'gallery-section' },
+  { id: 'pricing', label: 'Pricing', view: 'pricing' },
+  { id: 'gallery', label: 'Gallery', view: 'gallery' },
 ]
 
 function getProfileInitials(profile) {
@@ -31,6 +31,14 @@ function isItemActive(itemId, activeView) {
 
   if (itemId === 'tournament') {
     return activeView === 'tournaments'
+  }
+
+  if (itemId === 'pricing') {
+    return activeView === 'pricing'
+  }
+
+  if (itemId === 'gallery') {
+    return activeView === 'gallery'
   }
 
   return activeView === 'home' && itemId === 'home'

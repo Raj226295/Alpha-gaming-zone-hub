@@ -99,7 +99,7 @@ export const setups = [
     capacityLabel: 'Up to 4 gamers',
     badge: 'Console elite',
     availability: '16 lounge slots available today',
-    image: ps5Bay,
+    image: valorantCupPhoto,
     accent: '#CAE9EA',
     features: ['65 inch OLED display', 'DualSense Edge controllers', 'Spatial audio headset pairing'],
   },

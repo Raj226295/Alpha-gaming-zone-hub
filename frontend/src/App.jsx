@@ -5,6 +5,9 @@ import HomeView from './components/HomeView'
 import SetupView from './components/SetupView'
 import BookingView from './components/BookingView'
 import TournamentView from './components/TournamentView'
+import PricingView from './components/PricingView'
+import GalleryView from './components/GalleryView'
+import CursorEffect from './components/CursorEffect'
 import UserDashboardView from './components/UserDashboardView'
 import AdminDashboardView from './components/AdminDashboardView'
 import {
@@ -293,6 +296,20 @@ function App() {
       )
     }
 
+    if (deferredView === 'pricing') {
+      return (
+        <PricingView
+          pricingMatrix={pricingMatrix}
+          hourlyPricing={hourlyPricing}
+          onNavigate={handleNavigate}
+        />
+      )
+    }
+
+    if (deferredView === 'gallery') {
+      return <GalleryView gallery={gallery} onNavigate={handleNavigate} />
+    }
+
     if (deferredView === 'dashboard') {
       return (
         <UserDashboardView
@@ -340,6 +357,7 @@ function App() {
     <div className="app-shell">
       <div className="ambient ambient-left"></div>
       <div className="ambient ambient-right"></div>
+      <CursorEffect />
       <Navigation activeView={activeView} onNavigate={handleNavigate} profile={profile} />
       <main>{renderView()}</main>
     </div>
