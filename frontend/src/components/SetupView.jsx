@@ -44,8 +44,8 @@ function SetupView({ setups, pricing, onNavigate, onSelectSetup }) {
       <section className="section-block">
         <SectionHeading
           eyebrow="Arena lineup"
-          title="Four signature environments designed for every kind of player."
-          description="Each setup is ready for walk-ins, squads, creator sessions, and tournament warmups."
+          title="Signature environments designed for every kind of player."
+          description="Each setup is ready for walk-ins, squads, creator sessions, private parties, and tournament warmups."
         />
         <div className="setup-grid">
           {setups.map((setup) => (

@@ -1,29 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;800&family=Sora:wght@400;500;600;700&display=swap');
 
 :root {
-  --bg-primary: #f5f5ef;
-  --bg-secondary: #10172b;
-  --accent: #ffee00;
-  --highlight: #111827;
-  --text-border: #cad0db;
-  --surface: #ffffff;
-  --surface-strong: #ffffff;
-  --surface-soft: #fff8bf;
-  --border-strong: rgba(15, 23, 42, 0.08);
-  --border-bright: rgba(255, 230, 0, 0.88);
-  --shadow-deep: 0 22px 60px rgba(15, 23, 42, 0.08);
-  --shadow-glow: 0 14px 36px rgba(15, 23, 42, 0.06);
+  --bg-primary: #060815;
+  --bg-secondary: #0d1220;
+  --accent: #32d7ff;
+  --highlight: #dff8ff;
+  --text-border: rgba(223, 248, 255, 0.16);
+  --surface: rgba(13, 20, 34, 0.74);
+  --surface-strong: rgba(10, 15, 27, 0.9);
+  --surface-soft: rgba(50, 215, 255, 0.14);
+  --border-strong: rgba(223, 248, 255, 0.12);
+  --border-bright: rgba(50, 215, 255, 0.72);
+  --shadow-deep: 0 30px 70px rgba(0, 0, 0, 0.35);
+  --shadow-glow: 0 18px 44px rgba(0, 0, 0, 0.22);
   --radius: 16px;
   --radius-xl: 28px;
-  --font-body: 'Space Grotesk', 'Segoe UI', sans-serif;
-  --font-heading: 'Oxanium', 'Trebuchet MS', sans-serif;
+  --font-body: 'Sora', 'Segoe UI', sans-serif;
+  --font-heading: 'Orbitron', 'Trebuchet MS', sans-serif;
   font-family: var(--font-body);
   line-height: 1.5;
   font-weight: 400;
   color: var(--highlight);
   background:
-    radial-gradient(circle at top left, rgba(255, 230, 0, 0.12), transparent 30%),
-    linear-gradient(180deg, #fffef5 0%, #f7f7f0 42%, #f1f2eb 100%);
+    radial-gradient(circle at 12% 18%, rgba(255, 52, 170, 0.2), transparent 28%),
+    radial-gradient(circle at 84% 16%, rgba(50, 215, 255, 0.18), transparent 24%),
+    radial-gradient(circle at 60% 76%, rgba(114, 73, 255, 0.14), transparent 28%),
+    linear-gradient(180deg, #04060d 0%, #080d18 38%, #0c1320 100%);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -42,11 +44,49 @@ body,
 }
 
 body {
+  position: relative;
+  isolation: isolate;
   margin: 0;
   min-width: 320px;
   background:
-    linear-gradient(180deg, #fffef5 0%, #f8f8f2 45%, #f1f2eb 100%);
+    radial-gradient(circle at 12% 12%, rgba(255, 46, 166, 0.18), transparent 24%),
+    radial-gradient(circle at 86% 14%, rgba(50, 215, 255, 0.12), transparent 20%),
+    radial-gradient(circle at 70% 72%, rgba(114, 73, 255, 0.12), transparent 24%),
+    linear-gradient(180deg, #04060d 0%, #090e1a 36%, #0b1220 72%, #0e1627 100%);
   color: var(--highlight);
+}
+
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+body::before {
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(223, 248, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(223, 248, 255, 0.025) 1px, transparent 1px);
+  background-size: 140px 140px;
+  mask-image: radial-gradient(circle at center, black 34%, transparent 88%);
+  opacity: 0.45;
+}
+
+body::after {
+  z-index: 0;
+  background:
+    radial-gradient(circle at 18% 22%, rgba(255, 46, 166, 0.14), transparent 20%),
+    radial-gradient(circle at 82% 20%, rgba(50, 215, 255, 0.13), transparent 18%),
+    radial-gradient(circle at 68% 68%, rgba(114, 73, 255, 0.12), transparent 24%);
+  filter: blur(28px);
+  opacity: 0.9;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
 }
 
 button,

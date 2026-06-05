@@ -1,4 +1,4 @@
-import { startTransition, useDeferredValue, useState } from 'react'
+import { startTransition, useDeferredValue, useEffect, useEffectEvent, useState } from 'react'
 import './App.css'
 import Navigation from './components/Navigation'
 import HomeView from './components/HomeView'
@@ -12,15 +12,18 @@ import {
   contactDetails,
   coupons,
   defaultProfile,
-  featuredGames,
+  footerLinks,
   gallery,
-  heroStats,
   hourlyPricing,
   offers,
+  pricingMatrix,
+  reviews,
   setups,
+  socialLinks,
   timeSlots,
   tournaments,
   userDashboardSeed,
+  whyChoose,
 } from './data/siteData'
 
 const initialBookingForm = {
@@ -54,6 +57,7 @@ function formatDisplayDate(isoDate) {
 function App() {
   const [activeView, setActiveView] = useState('home')
   const deferredView = useDeferredValue(activeView)
+  const [pendingSection, setPendingSection] = useState(null)
   const [bookingForm, setBookingForm] = useState(initialBookingForm)
   const [appliedCoupon, setAppliedCoupon] = useState(null)
   const [couponFeedback, setCouponFeedback] = useState(
@@ -119,12 +123,49 @@ function App() {
     ],
   }
 
-  function handleNavigate(viewId) {
+  const scrollToHomeSection = useEffectEvent((sectionId) => {
+    if (typeof document === 'undefined' || typeof window === 'undefined') {
+      return
+    }
+
+    const target = document.getElementById(sectionId)
+
+    if (!target) {
+      return
+    }
+
+    const headerOffset = 128
+    const targetOffset = target.getBoundingClientRect().top + window.scrollY - headerOffset
+
+    window.scrollTo({
+      top: Math.max(targetOffset, 0),
+      behavior: 'smooth',
+    })
+  })
+
+  useEffect(() => {
+    if (deferredView !== 'home' || !pendingSection || typeof window === 'undefined') {
+      return
+    }
+
+    const frame = window.requestAnimationFrame(() => {
+      scrollToHomeSection(pendingSection)
+      setPendingSection(null)
+    })
+
+    return () => window.cancelAnimationFrame(frame)
+  }, [deferredView, pendingSection])
+
+  function handleNavigate(viewId, options = {}) {
+    const nextSectionId = options.sectionId ?? null
+
+    setPendingSection(nextSectionId)
+
     startTransition(() => {
       setActiveView(viewId)
     })
 
-    if (typeof window !== 'undefined') {
+    if (typeof window !== 'undefined' && !nextSectionId) {
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
@@ -194,7 +235,7 @@ function App() {
       title: selectedTournament.title,
       teamName,
       captain,
-      checkIn: `${selectedTournament.date} • 1 hour before start`,
+      checkIn: `${selectedTournament.date} at ${selectedTournament.time} - 1 hour before start`,
       date: selectedTournament.date,
       fee: selectedTournament.fee,
       paymentMethod: tournamentForm.paymentMethod,
@@ -278,13 +319,19 @@ function App() {
 
     return (
       <HomeView
-        heroStats={heroStats}
-        featuredGames={featuredGames}
         tournaments={tournaments}
         offers={offers}
         gallery={gallery}
         contact={contactDetails}
+        setups={setups}
+        whyChoose={whyChoose}
+        pricingMatrix={pricingMatrix}
+        reviews={reviews}
+        footerLinks={footerLinks}
+        socialLinks={socialLinks}
         onNavigate={handleNavigate}
+        onSelectSetup={(setupId) => handleBookingField('setupId', setupId)}
+        onSelectTournament={(tournamentId) => handleTournamentField('tournamentId', tournamentId)}
       />
     )
   }

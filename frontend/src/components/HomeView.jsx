@@ -1,75 +1,71 @@
 import SectionHeading from './SectionHeading'
-import heroAlphaBanner from '../assets/gaming/hero-alpha-banner.png'
+import heroGamingZoneBanner from '../assets/gaming/hero-gaming-zone-banner.png'
+import alphaCrest from '../assets/gaming/alpha-crest.svg'
 
 function HomeView({
-  heroStats,
-  featuredGames,
   tournaments,
   offers,
   gallery,
   contact,
+  setups,
+  whyChoose,
+  pricingMatrix,
+  reviews,
+  footerLinks,
+  socialLinks,
   onNavigate,
+  onSelectSetup,
+  onSelectTournament,
 }) {
   return (
-    <div className="view-stack">
-      <section className="hero-poster-panel">
-        <div className="hero-poster-frame">
+    <div className="alpha-home">
+      <section id="home" className="alpha-hero-section">
+        <div className="alpha-hero-banner">
           <img
-            src={heroAlphaBanner}
-            alt="Alpha Gaming Zone banner showcasing PS5 room, PC gaming, VR gaming, racing simulator, private room, and multiplayer cabin."
-            className="hero-poster-image"
+            src={heroGamingZoneBanner}
+            alt="Alpha Gaming lounge banner"
+            className="alpha-hero-banner-image"
           />
         </div>
-
-        <div className="hero-poster-actions">
-          <div className="hero-poster-copy">
-            <span className="section-eyebrow">Signature banner</span>
-            <h2>The zone of legends is live at Alpha Gaming Zone.</h2>
-            <p>
-              Jump into premium setups, instant slot booking, and high-energy tournaments
-              from one esports-first experience.
-            </p>
-          </div>
-
-          <div className="hero-actions">
-            <button type="button" className="primary-button" onClick={() => onNavigate('booking')}>
-              Book Now
-            </button>
-            <button type="button" className="secondary-button" onClick={() => onNavigate('setups')}>
-              View Setups
-            </button>
-          </div>
-        </div>
       </section>
 
-      <section className="hero-stats-strip">
-        {heroStats.map((stat) => (
-          <div key={stat.label} className="stat-pill">
-            <strong>{stat.value}</strong>
-            <span>{stat.label}</span>
-          </div>
-        ))}
-      </section>
-
-      <section className="section-block">
+      <section id="gaming-setups" className="section-block">
         <SectionHeading
-          eyebrow="Featured games"
-          title="Headline experiences built for couch rivals, ranked grinders, and spectacle nights."
-          description="These are the titles and formats that define the Alpha Gaming Zone energy right now."
+          eyebrow="Featured gaming setups"
+          title="Six premium play zones crafted for console rivals, esports grinders, and immersive group nights."
+          description="Every setup is wrapped in soft blur lighting, high-end hardware, and a lounge-first experience."
         />
-        <div className="featured-game-grid">
-          {featuredGames.map((game) => (
-            <article key={game.title} className="glass-card featured-game-card">
-              <img src={game.image} alt={game.title} className="featured-game-image" />
-              <div className="featured-game-content">
+
+        <div className="alpha-setup-grid">
+          {setups.map((setup) => (
+            <article key={setup.id} className="alpha-setup-card glass-card">
+              <div className="alpha-setup-media">
+                <img src={setup.image} alt={setup.name} className="setup-image" />
+                <span className="alpha-price-pill">Rs.{setup.price}/hr</span>
+              </div>
+
+              <div className="alpha-setup-content">
                 <div className="card-topline">
-                  <span className="accent-badge">{game.accent}</span>
-                  <span className="muted-copy">{game.genre}</span>
+                  <span className="accent-badge">{setup.shortLabel}</span>
+                  <span className="muted-copy">{setup.capacityLabel}</span>
                 </div>
-                <h3>{game.title}</h3>
-                <p>{game.detail}</p>
-                <button type="button" className="text-button" onClick={() => onNavigate('setups')}>
-                  Match with a setup
+                <h3>{setup.name}</h3>
+                <p>{setup.headline}</p>
+
+                <div className="alpha-setup-meta">
+                  <span>{setup.playersRange}</span>
+                  <span>{setup.availability}</span>
+                </div>
+
+                <button
+                  type="button"
+                  className="primary-button full-width"
+                  onClick={() => {
+                    onSelectSetup(setup.id)
+                    onNavigate('booking')
+                  }}
+                >
+                  Book Now
                 </button>
               </div>
             </article>
@@ -77,28 +73,55 @@ function HomeView({
         </div>
       </section>
 
-      <section className="section-block">
+      <section id="tournament-section" className="section-block">
         <SectionHeading
-          eyebrow="Tournament pulse"
-          title="Upcoming competitions with prize pools, live casting, and instant registration."
-          description="From tactical shooters to football finals and sim-racing qualifiers, the stage is always active."
+          eyebrow="Upcoming tournaments"
+          title="From mobile battle royale nights to tactical PC cups, the competitive stage stays live."
+          description="Secure your slot, warm up in the lounge, and step into events built for hype, prizes, and elite atmosphere."
         />
-        <div className="tournament-preview-grid">
+
+        <div className="alpha-tournament-grid">
           {tournaments.map((tournament) => (
-            <article key={tournament.id} className="glass-card tournament-card">
+            <article key={tournament.id} className="alpha-tournament-card glass-card">
               <img src={tournament.image} alt={tournament.title} className="tournament-image" />
+
               <div className="tournament-copy">
                 <div className="card-topline">
                   <span className="accent-badge">{tournament.mode}</span>
-                  <span className="muted-copy">{tournament.date}</span>
+                  <span className="muted-copy">{tournament.spots}</span>
                 </div>
                 <h3>{tournament.title}</h3>
                 <p>{tournament.summary}</p>
-                <div className="detail-row">
-                  <span>{tournament.prize}</span>
-                  <span>{tournament.spots}</span>
+
+                <div className="alpha-tournament-meta">
+                  <div>
+                    <span>Entry fee</span>
+                    <strong>Rs.{tournament.fee}</strong>
+                  </div>
+                  <div>
+                    <span>Prize pool</span>
+                    <strong>{tournament.prize}</strong>
+                  </div>
+                  <div>
+                    <span>Date and time</span>
+                    <strong>
+                      {tournament.date} at {tournament.time}
+                    </strong>
+                  </div>
+                  <div>
+                    <span>Remaining slots</span>
+                    <strong>{tournament.spots}</strong>
+                  </div>
                 </div>
-                <button type="button" className="primary-button" onClick={() => onNavigate('tournaments')}>
+
+                <button
+                  type="button"
+                  className="primary-button full-width"
+                  onClick={() => {
+                    onSelectTournament(tournament.id)
+                    onNavigate('tournaments')
+                  }}
+                >
                   Participate Now
                 </button>
               </div>
@@ -107,16 +130,103 @@ function HomeView({
         </div>
       </section>
 
-      <section className="section-block two-column-layout">
-        <div>
+      <section className="section-block">
+        <SectionHeading
+          eyebrow="Why choose Alpha Gaming"
+          title="Designed like a premium esports lounge, not a generic gaming cafe."
+          description="Comfort, speed, visual polish, and modern gaming hardware come together for a high-end social experience."
+        />
+
+        <div className="alpha-feature-grid">
+          {whyChoose.map((feature) => (
+            <article key={feature.id} className="alpha-feature-card glass-card">
+              <span className="alpha-feature-tag">{feature.tag}</span>
+              <h3>{feature.title}</h3>
+              <p>{feature.description}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="pricing-section" className="section-block">
+        <div className="glass-panel alpha-pricing-panel">
+          <SectionHeading
+            eyebrow="Pricing"
+            title="Transparent premium pricing for every style of play."
+            description="Choose your lane, lock your time, and move from discovery to booking in one sleek flow."
+            align="center"
+          />
+
+          <div className="alpha-pricing-table">
+            {pricingMatrix.map((plan) => (
+              <article key={plan.name} className="alpha-pricing-row">
+                <div>
+                  <h3>{plan.name}</h3>
+                  <p>{plan.summary}</p>
+                </div>
+                <strong>{plan.rate}</strong>
+              </article>
+            ))}
+          </div>
+
+          <div className="alpha-pricing-cta">
+            <button type="button" className="secondary-button" onClick={() => onNavigate('setups')}>
+              View Full Pricing
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section id="gallery-section" className="section-block">
+        <SectionHeading
+          eyebrow="Gallery"
+          title="A cinematic gaming zone that looks as sharp on camera as it feels in person."
+          description="Browse tournament moments, premium setups, and lounge corners built for standout nights."
+        />
+
+        <div className="alpha-gallery-grid">
+          {gallery.map((item) => (
+            <figure key={item.title} className="alpha-gallery-tile">
+              <img src={item.image} alt={item.title} />
+              <figcaption>{item.title}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+
+      <section className="alpha-split-showcase">
+        <div className="section-block">
+          <SectionHeading
+            eyebrow="Customer reviews"
+            title="Five-star reactions from players who came for one match and stayed for the vibe."
+            description="The glow, comfort, and competitive energy keep players coming back for more."
+          />
+
+          <div className="alpha-review-grid">
+            {reviews.map((review) => (
+              <article key={review.id} className="alpha-review-card glass-card">
+                <span className="alpha-review-score">5-Star Review</span>
+                <h3>{review.title}</h3>
+                <p>{review.quote}</p>
+                <div className="alpha-review-author">
+                  <strong>{review.author}</strong>
+                  <span>{review.role}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <div className="section-block">
           <SectionHeading
             eyebrow="Special offers"
-            title="Curated perks for squads, streamers, and celebration nights."
-            description="These offers rotate weekly and feed directly into the booking flow."
+            title="Premium perks crafted for first-timers, weekend squads, and tournament regulars."
+            description="Use these offers to unlock more play time, better value, and faster entry into featured events."
           />
-          <div className="offer-list">
+
+          <div className="alpha-offer-grid">
             {offers.map((offer) => (
-              <article key={offer.title} className="glass-card offer-card">
+              <article key={offer.title} className="alpha-offer-card glass-card">
                 <span className="accent-badge">{offer.badge}</span>
                 <h3>{offer.title}</h3>
                 <p>{offer.description}</p>
@@ -124,63 +234,107 @@ function HomeView({
             ))}
           </div>
         </div>
-
-        <div>
-          <SectionHeading
-            eyebrow="Gallery"
-            title="The lounge looks as sharp in person as it does on stream."
-            description="Explore our premium corners, competitive pits, and post-match hangout zones."
-          />
-          <div className="gallery-grid">
-            {gallery.map((item) => (
-              <figure key={item.title} className="gallery-tile">
-                <img src={item.image} alt={item.title} />
-                <figcaption>{item.title}</figcaption>
-              </figure>
-            ))}
-          </div>
-        </div>
       </section>
 
-      <section className="section-block contact-block glass-panel">
-        <div>
+      <section id="contact-section" className="alpha-contact-section">
+        <div className="glass-panel alpha-contact-panel">
           <SectionHeading
-            eyebrow="Contact and location"
-            title="Find the arena, reserve your session, and drop into the glow."
-            description="The venue is built for walk-ins and online reservations, with food, parking, and late-night access."
+            eyebrow="Contact"
+            title="Reserve your next session, ping the team, or navigate straight to the arena."
+            description="Everything you need to connect with Alpha Gaming is right here, from WhatsApp booking to maps and opening hours."
           />
-          <div className="contact-list">
-            <div>
+
+          <div className="alpha-contact-actions">
+            <a
+              className="primary-button alpha-button-link"
+              href={contact.whatsappUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              WhatsApp
+            </a>
+            <a className="secondary-button alpha-button-link" href={contact.phoneHref}>
+              Call Now
+            </a>
+            <a
+              className="secondary-button alpha-button-link"
+              href={contact.mapsUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Google Maps
+            </a>
+          </div>
+
+          <div className="alpha-contact-grid">
+            <article className="alpha-contact-card">
               <span className="label-copy">Address</span>
-              <p>{contact.address}</p>
-            </div>
-            <div>
-              <span className="label-copy">Call</span>
-              <p>{contact.phone}</p>
-            </div>
-            <div>
-              <span className="label-copy">Email</span>
+              <strong>{contact.address}</strong>
+              <p>{contact.mapNote}</p>
+            </article>
+
+            <article className="alpha-contact-card">
+              <span className="label-copy">Opening hours</span>
+              <strong>{contact.hours}</strong>
+              <p>{contact.hoursList.join(' | ')}</p>
+            </article>
+
+            <article className="alpha-contact-card">
+              <span className="label-copy">Call us</span>
+              <strong>{contact.phone}</strong>
               <p>{contact.email}</p>
-            </div>
-            <div>
-              <span className="label-copy">Hours</span>
-              <p>{contact.hours}</p>
-            </div>
+            </article>
           </div>
         </div>
 
-        <div className="map-card glass-card">
-          <span className="section-eyebrow">Arena map</span>
-          <h3>Cyber Avenue, Lucknow</h3>
-          <p>{contact.mapNote}</p>
-          <div className="map-grid">
-            <div>Metro line</div>
-            <div>Valet drop</div>
-            <div>Food court</div>
-            <div>VIP entry</div>
-          </div>
+        <div className="glass-card alpha-map-card">
+          <span className="section-eyebrow">Arena location</span>
+          <h3>Find the Alpha Gaming lounge</h3>
+          <iframe
+            title="Alpha Gaming location map"
+            src={contact.mapEmbedUrl}
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
         </div>
       </section>
+
+      <footer id="footer-section" className="alpha-footer glass-panel">
+        <div className="alpha-footer-brand">
+          <span className="alpha-logo-shell alpha-logo-shell-md">
+            <img src={alphaCrest} alt="Alpha Gaming crest" className="alpha-footer-logo" />
+          </span>
+          <div>
+            <p className="alpha-hero-brand">ALPHA GAMING</p>
+            <h3>The Zone of Legends</h3>
+            <p>
+              Premium gaming atmosphere, high-end setups, and tournament nights designed
+              to feel unforgettable.
+            </p>
+          </div>
+        </div>
+
+        <div className="alpha-footer-links">
+          {footerLinks.map((link) => (
+            <button
+              key={link.label}
+              type="button"
+              className="alpha-footer-link"
+              onClick={() => onNavigate('home', { sectionId: link.sectionId })}
+            >
+              {link.label}
+            </button>
+          ))}
+        </div>
+
+        <div className="alpha-footer-social">
+          {socialLinks.map((link) => (
+            <a key={link.label} href={link.href} target="_blank" rel="noreferrer">
+              {link.label}
+            </a>
+          ))}
+        </div>
+      </footer>
     </div>
   )
 }

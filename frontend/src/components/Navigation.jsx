@@ -1,54 +1,13 @@
-import { primaryNavItems } from '../data/siteData'
 import alphaLogoPremium from '../assets/gaming/alpha-logo-premium.png'
 
-const promoMessages = [
-  'PS5 Room bookings starting from Rs.499/hr',
-  'Tournament registrations are live for June weekends',
-  'VR and racing simulator prime slots filling fast',
+const navItems = [
+  { id: 'home', label: 'Home', view: 'home', sectionId: 'home' },
+  { id: 'gaming-setup', label: 'Gaming Setup', view: 'home', sectionId: 'gaming-setups' },
+  { id: 'book-slot', label: 'Book Slot', view: 'booking' },
+  { id: 'tournament', label: 'Tournament', view: 'home', sectionId: 'tournament-section' },
+  { id: 'pricing', label: 'Pricing', view: 'home', sectionId: 'pricing-section' },
+  { id: 'gallery', label: 'Gallery', view: 'home', sectionId: 'gallery-section' },
 ]
-
-function HomeIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M4 11.5 12 5l8 6.5V20a1 1 0 0 1-1 1h-4.5v-5.5h-5V21H5a1 1 0 0 1-1-1z" />
-    </svg>
-  )
-}
-
-function SetupIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M5 7.5h14a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2.5l-2.5 2-2.5-2H5a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2Z" />
-      <path d="M8.5 12h2m3 0h2" />
-    </svg>
-  )
-}
-
-function BookingIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M7 4.5V7m10-2.5V7M5 8.5h14M6 5.5h12a1.5 1.5 0 0 1 1.5 1.5v10A1.5 1.5 0 0 1 18 18.5H6A1.5 1.5 0 0 1 4.5 17V7A1.5 1.5 0 0 1 6 5.5Z" />
-      <path d="m9 13 1.8 1.8L15 10.5" />
-    </svg>
-  )
-}
-
-function TrophyIcon() {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d="M8 5h8v2.5a4 4 0 0 1-8 0Z" />
-      <path d="M8 6H5.5A1.5 1.5 0 0 0 4 7.5v.5A4 4 0 0 0 8 12m8-6h2.5A1.5 1.5 0 0 1 20 7.5v.5A4 4 0 0 1 16 12" />
-      <path d="M12 11.5V15m-3 4.5h6m-5-2h4" />
-    </svg>
-  )
-}
-
-const iconMap = {
-  home: HomeIcon,
-  setups: SetupIcon,
-  booking: BookingIcon,
-  tournaments: TrophyIcon,
-}
 
 function getProfileInitials(profile) {
   const source = profile.fullName?.trim() || profile.gamerTag?.trim() || 'AG'
@@ -61,115 +20,73 @@ function getProfileInitials(profile) {
   return `${parts[0][0] ?? ''}${parts[1][0] ?? ''}`.toUpperCase()
 }
 
+function isItemActive(itemId, activeView) {
+  if (itemId === 'book-slot') {
+    return activeView === 'booking'
+  }
+
+  if (itemId === 'gaming-setup') {
+    return activeView === 'setups'
+  }
+
+  if (itemId === 'tournament') {
+    return activeView === 'tournaments'
+  }
+
+  return activeView === 'home' && itemId === 'home'
+}
+
 function Navigation({ activeView, onNavigate, profile }) {
   const initials = getProfileInitials(profile)
 
   return (
-    <>
-      <div className="promo-strip" aria-label="Latest offers">
-        <div className="promo-marquee">
-          {[...promoMessages, ...promoMessages].map((message, index) => (
-            <span key={`${message}-${index}`}>{message}</span>
-          ))}
-        </div>
-      </div>
+    <header className="alpha-header-shell">
+      <div className="alpha-header">
+        <button
+          type="button"
+          className="alpha-brand-lockup"
+          onClick={() => onNavigate('home', { sectionId: 'home' })}
+        >
+          <span className="alpha-logo-shell alpha-logo-shell-sm">
+            <img src={alphaLogoPremium} alt="Alpha Gaming logo" className="alpha-brand-logo" />
+          </span>
+          <span className="alpha-brand-copy">
+            <strong>ALPHA GAMING</strong>
+            <small>The Zone of Legends</small>
+          </span>
+        </button>
 
-      <header className="site-header">
-        <div className="brand-lockup">
-          <div className="brand-mark-shell">
-            <img src={alphaLogoPremium} alt="Alpha Gaming logo" className="brand-logo" />
-          </div>
-          <div className="brand-copy">
-            <p className="brand-kicker">Alpha gaming zone</p>
-            <h1>Alpha Gaming Zone</h1>
-            <p className="brand-subcopy">Premium lounge booking, esports events, and immersive gaming setups.</p>
-          </div>
-        </div>
-
-        <nav className="desktop-nav" aria-label="Primary navigation">
-          {primaryNavItems.map((tab) => (
+        <nav className="alpha-nav-menu" aria-label="Primary navigation">
+          {navItems.map((item) => (
             <button
-              key={tab.id}
+              key={item.id}
               type="button"
-              className={tab.id === activeView ? 'desktop-nav-link active' : 'desktop-nav-link'}
-              onClick={() => onNavigate(tab.id)}
+              className={isItemActive(item.id, activeView) ? 'alpha-nav-link active' : 'alpha-nav-link'}
+              onClick={() => onNavigate(item.view, item.sectionId ? { sectionId: item.sectionId } : {})}
             >
-              {tab.label}
+              {item.label}
             </button>
           ))}
         </nav>
 
-        <div className="masthead-actions">
-          <div className="header-status">
-            <span className="status-dot"></span>
-            <div>
-              <p className="brand-kicker">Today</p>
-              <strong>Open till 1:30 AM</strong>
-            </div>
-          </div>
-
-          <button
-            type="button"
-            className={activeView === 'admin' ? 'ops-console active' : 'ops-console'}
-            onClick={() => onNavigate('admin')}
-          >
-            <span>Operations</span>
-            <strong>Control Room</strong>
+        <div className="alpha-nav-actions">
+          <button type="button" className="alpha-login-button" onClick={() => onNavigate('dashboard')}>
+            Login
           </button>
-
+          <button type="button" className="alpha-signup-button" onClick={() => onNavigate('dashboard')}>
+            Sign Up
+          </button>
           <button
             type="button"
-            className={activeView === 'dashboard' ? 'header-avatar active' : 'header-avatar'}
+            className={activeView === 'dashboard' ? 'alpha-profile-avatar active' : 'alpha-profile-avatar'}
             onClick={() => onNavigate('dashboard')}
-            aria-label="Open account"
+            aria-label="Open profile dashboard"
           >
             {initials}
           </button>
         </div>
-      </header>
-
-      <div className="bottom-nav-dock">
-        <nav className="bottom-nav" aria-label="Primary navigation">
-          {primaryNavItems.map((tab) => {
-            const isActive = tab.id === activeView
-            const Icon = iconMap[tab.icon]
-
-            return (
-              <button
-                key={tab.id}
-                type="button"
-                title={tab.summary}
-                aria-label={tab.label}
-                className={tab.id === 'dashboard'
-                  ? isActive
-                    ? 'dock-item dock-item-account active'
-                    : 'dock-item dock-item-account'
-                  : isActive
-                    ? 'dock-item active'
-                    : 'dock-item'}
-                onClick={() => onNavigate(tab.id)}
-              >
-                <span className="dock-visual">
-                  {tab.id === 'dashboard' ? (
-                    <span className="profile-avatar" aria-hidden="true">
-                      {initials}
-                    </span>
-                  ) : (
-                    <span className="dock-icon" aria-hidden="true">
-                      <Icon />
-                    </span>
-                  )}
-                </span>
-                <span className="dock-copy">
-                  <strong>{tab.label}</strong>
-                  <small>{tab.summary}</small>
-                </span>
-              </button>
-            )
-          })}
-        </nav>
       </div>
-    </>
+    </header>
   )
 }
 
