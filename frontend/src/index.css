@@ -15,6 +15,9 @@
   --shadow-glow: 0 18px 44px rgba(0, 0, 0, 0.22);
   --radius: 16px;
   --radius-xl: 28px;
+  --cursor-cyan: #5df4ff;
+  --cursor-magenta: #ff58d0;
+  --cursor-violet: #a770ff;
   --cursor-x: -160px;
   --cursor-y: -160px;
   --cursor-angle: 0deg;
@@ -91,24 +94,8 @@ body::after {
 
 html.cursor-enhanced,
 html.cursor-enhanced body,
-html.cursor-enhanced a,
-html.cursor-enhanced button,
-html.cursor-enhanced label,
-html.cursor-enhanced select,
-html.cursor-enhanced summary,
-html.cursor-enhanced iframe,
-html.cursor-enhanced [role='button'],
-html.cursor-enhanced [data-cursor='interactive'],
-html.cursor-enhanced input[type='checkbox'],
-html.cursor-enhanced input[type='radio'],
-html.cursor-enhanced input[type='range'],
-html.cursor-enhanced input[type='submit'],
-html.cursor-enhanced input[type='button'],
-html.cursor-enhanced input[type='reset'] {
-  cursor:
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='42' height='42' viewBox='0 0 42 42'%3E%3Cdefs%3E%3Cfilter id='g' x='-80%25' y='-80%25' width='260%25' height='260%25'%3E%3CfeDropShadow dx='0' dy='0' stdDeviation='2.4' flood-color='%23d28cff' flood-opacity='1'/%3E%3CfeDropShadow dx='0' dy='0' stdDeviation='5.4' flood-color='%238a2be2' flood-opacity='0.92'/%3E%3C/filter%3E%3C/defs%3E%3Cpath filter='url(%23g)' d='M6 4l23 18-10 2 5.8 11.8-5.2 2.2-6-12.2-7.1 5.7L6 4Z' fill='white' stroke='%23b15cff' stroke-width='2.2' stroke-linejoin='round'/%3E%3C/svg%3E")
-      6 4,
-    auto !important;
+html.cursor-enhanced body * {
+  cursor: none !important;
 }
 
 html.cursor-enabled textarea,

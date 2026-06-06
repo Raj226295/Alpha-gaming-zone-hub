@@ -3,17 +3,12 @@ import { useEffect, useEffectEvent, useRef, useState } from 'react'
 const interactiveSelector = [
   'a',
   'button',
+  '.card',
+  '.glass-card',
+  '[role="button"]',
   'label',
   'summary',
   'select',
-  '[role="button"]',
-  '[data-cursor="interactive"]',
-  'input[type="checkbox"]',
-  'input[type="radio"]',
-  'input[type="range"]',
-  'input[type="submit"]',
-  'input[type="button"]',
-  'input[type="reset"]',
 ].join(', ')
 
 const textInputSelector = [
@@ -22,26 +17,21 @@ const textInputSelector = [
   'input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="submit"]):not([type="button"]):not([type="reset"]):not([type="file"]):not([type="color"])',
 ].join(', ')
 
-const hiddenPosition = -160
-const trailScales = [1, 0.92, 0.82, 0.72, 0.62, 0.52, 0.42]
-const trailOpacities = [0.82, 0.68, 0.56, 0.44, 0.34, 0.24, 0.14]
-const sparkleParticles = [
-  { distance: 22, spread: -16, scale: 1.05, delay: '0s' },
-  { distance: 44, spread: 10, scale: 0.92, delay: '0.14s' },
-  { distance: 68, spread: -6, scale: 0.84, delay: '0.28s' },
-  { distance: 92, spread: 14, scale: 0.72, delay: '0.09s' },
-  { distance: 118, spread: -12, scale: 0.62, delay: '0.22s' },
-]
+const hiddenPosition = -100
 
 function supportsCursorEffect() {
   if (typeof window === 'undefined') {
     return false
   }
 
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    return false
+  }
+
   return (
+    window.matchMedia('(pointer: fine)').matches ||
     window.matchMedia('(any-pointer: fine)').matches ||
-    window.matchMedia('(hover: hover)').matches ||
-    !window.matchMedia('(pointer: coarse)').matches
+    window.matchMedia('(hover: hover)').matches
   )
 }
 
@@ -61,106 +51,50 @@ function resolveCursorVariant(target) {
   return 'default'
 }
 
-function buildTrailPath(points) {
-  const visiblePoints = points.filter(({ x, y }) => x !== hiddenPosition && y !== hiddenPosition)
-
-  if (visiblePoints.length < 2) {
-    return ''
-  }
-
-  let path = `M ${visiblePoints[0].x.toFixed(2)} ${visiblePoints[0].y.toFixed(2)}`
-
-  for (let index = 1; index < visiblePoints.length; index += 1) {
-    const point = visiblePoints[index]
-    path += ` L ${point.x.toFixed(2)} ${point.y.toFixed(2)}`
-  }
-
-  return path
-}
-
 function CursorEffect() {
-  const trailGlowPathRef = useRef(null)
-  const trailCorePathRef = useRef(null)
-  const trailAccentPathRef = useRef(null)
-  const trailNodeRefs = useRef([])
-  const animationFrameRef = useRef(null)
+  const cursorRef = useRef(null)
+  const trailRef = useRef(null)
+  const animationFrameRef = useRef(0)
   const pointerRef = useRef({ x: hiddenPosition, y: hiddenPosition })
-  const previousPointerRef = useRef({ x: hiddenPosition, y: hiddenPosition })
-  const trailPointsRef = useRef(
-    trailScales.map(() => ({
-      x: hiddenPosition,
-      y: hiddenPosition,
-    })),
-  )
+  const trailPositionRef = useRef({ x: hiddenPosition, y: hiddenPosition })
+  const isVisibleRef = useRef(false)
 
-  const [isEnabled, setIsEnabled] = useState(() => {
-    return supportsCursorEffect()
-  })
+  const [isEnabled, setIsEnabled] = useState(() => supportsCursorEffect())
   const [isVisible, setIsVisible] = useState(false)
-  const [isPressed, setIsPressed] = useState(false)
-  const [variant, setVariant] = useState('default')
+  const [isInteractive, setIsInteractive] = useState(false)
 
-  const setRootVar = useEffectEvent((name, value) => {
-    if (typeof document === 'undefined') {
+  const syncVisibleState = useEffectEvent((nextVisible) => {
+    if (isVisibleRef.current === nextVisible) {
       return
     }
 
-    document.documentElement.style.setProperty(name, value)
-  })
-
-  const setCursorPosition = useEffectEvent((x, y) => {
-    setRootVar('--cursor-x', `${x}px`)
-    setRootVar('--cursor-y', `${y}px`)
-  })
-
-  const setCursorMotion = useEffectEvent((dx, dy) => {
-    const distance = Math.hypot(dx, dy)
-    const angle = distance > 0 ? Math.atan2(dy, dx) * (180 / Math.PI) : 0
-    const intensity = Math.min(Math.max(distance / 26, 0.24), 1)
-    const trailLength = 76 + Math.min(distance * 3.4, 144)
-
-    setRootVar('--cursor-angle', `${angle}deg`)
-    setRootVar('--cursor-intensity', intensity.toFixed(3))
-    setRootVar('--cursor-trail-length', `${trailLength}px`)
-  })
-
-  const setTrailPath = useEffectEvent((path) => {
-    if (trailGlowPathRef.current) {
-      trailGlowPathRef.current.setAttribute('d', path)
-    }
-
-    if (trailCorePathRef.current) {
-      trailCorePathRef.current.setAttribute('d', path)
-    }
-
-    if (trailAccentPathRef.current) {
-      trailAccentPathRef.current.setAttribute('d', path)
-    }
+    isVisibleRef.current = nextVisible
+    setIsVisible(nextVisible)
   })
 
   const resetCursor = useEffectEvent(() => {
     pointerRef.current = { x: hiddenPosition, y: hiddenPosition }
-    previousPointerRef.current = { x: hiddenPosition, y: hiddenPosition }
-    trailPointsRef.current = trailScales.map(() => ({
-      x: hiddenPosition,
-      y: hiddenPosition,
-    }))
-    setCursorPosition(hiddenPosition, hiddenPosition)
-    setRootVar('--cursor-angle', '0deg')
-    setRootVar('--cursor-intensity', '0.24')
-    setRootVar('--cursor-trail-length', '76px')
-    setTrailPath('')
+    trailPositionRef.current = { x: hiddenPosition, y: hiddenPosition }
+
+    if (cursorRef.current) {
+      cursorRef.current.style.left = `${hiddenPosition}px`
+      cursorRef.current.style.top = `${hiddenPosition}px`
+    }
+
+    if (trailRef.current) {
+      trailRef.current.style.left = `${hiddenPosition}px`
+      trailRef.current.style.top = `${hiddenPosition}px`
+    }
   })
 
   const handlePointerSupportChange = useEffectEvent(() => {
-    const isSupported = supportsCursorEffect()
+    const nextSupport = supportsCursorEffect()
 
-    setIsEnabled(isSupported)
+    setIsEnabled(nextSupport)
 
-    if (!isSupported) {
-      setIsVisible(false)
-      setIsPressed(false)
-      setVariant('default')
+    if (!nextSupport) {
+      syncVisibleState(false)
+      setIsInteractive(false)
       resetCursor()
     }
   })
@@ -170,16 +104,22 @@ function CursorEffect() {
       return undefined
     }
 
-    const finePointerQuery = window.matchMedia('(pointer: fine)')
-    const hoverQuery = window.matchMedia('(hover: hover)')
+    const mediaQueries = [
+      window.matchMedia('(pointer: fine)'),
+      window.matchMedia('(any-pointer: fine)'),
+      window.matchMedia('(hover: hover)'),
+      window.matchMedia('(prefers-reduced-motion: reduce)'),
+    ]
     const handleChange = () => handlePointerSupportChange()
 
-    finePointerQuery.addEventListener('change', handleChange)
-    hoverQuery.addEventListener('change', handleChange)
+    for (const mediaQuery of mediaQueries) {
+      mediaQuery.addEventListener('change', handleChange)
+    }
 
     return () => {
-      finePointerQuery.removeEventListener('change', handleChange)
-      hoverQuery.removeEventListener('change', handleChange)
+      for (const mediaQuery of mediaQueries) {
+        mediaQuery.removeEventListener('change', handleChange)
+      }
     }
   }, [])
 
@@ -210,24 +150,17 @@ function CursorEffect() {
     }
 
     const animateTrail = () => {
-      const points = trailPointsRef.current
-      const nodes = trailNodeRefs.current
+      const trail = trailRef.current
+      const pointer = pointerRef.current
+      const trailPosition = trailPositionRef.current
 
-      for (let index = 0; index < points.length; index += 1) {
-        const target = index === 0 ? pointerRef.current : points[index - 1]
-        const easing = Math.max(0.18, 0.32 - index * 0.025)
+      trailPosition.x += (pointer.x - trailPosition.x) * 0.15
+      trailPosition.y += (pointer.y - trailPosition.y) * 0.15
 
-        points[index].x += (target.x - points[index].x) * easing
-        points[index].y += (target.y - points[index].y) * easing
-
-        const node = nodes[index]
-
-        if (node) {
-          node.style.transform = `translate3d(${points[index].x}px, ${points[index].y}px, 0) translate(-50%, -50%) scale(${trailScales[index]})`
-        }
+      if (trail) {
+        trail.style.left = `${trailPosition.x}px`
+        trail.style.top = `${trailPosition.y}px`
       }
-
-      setTrailPath(buildTrailPath(points))
 
       animationFrameRef.current = window.requestAnimationFrame(animateTrail)
     }
@@ -251,63 +184,40 @@ function CursorEffect() {
       const nextX = event.clientX
       const nextY = event.clientY
 
-      setVariant(nextVariant)
-
       if (nextVariant === 'text') {
-        setIsVisible(false)
-        setIsPressed(false)
-        previousPointerRef.current = { x: nextX, y: nextY }
+        syncVisibleState(false)
+        setIsInteractive(false)
         return
       }
 
-      const previous = previousPointerRef.current
-      const dx = previous.x === hiddenPosition ? 0 : nextX - previous.x
-      const dy = previous.y === hiddenPosition ? 0 : nextY - previous.y
-
       pointerRef.current = { x: nextX, y: nextY }
-      previousPointerRef.current = { x: nextX, y: nextY }
 
-      setCursorPosition(nextX, nextY)
-      setCursorMotion(dx, dy)
-      setIsVisible(true)
+      if (!isVisibleRef.current) {
+        trailPositionRef.current = { x: nextX, y: nextY }
+      }
+
+      if (cursorRef.current) {
+        cursorRef.current.style.left = `${nextX}px`
+        cursorRef.current.style.top = `${nextY}px`
+      }
+
+      setIsInteractive(nextVariant === 'interactive')
+      syncVisibleState(true)
     }
 
     const handlePointerLeave = () => {
-      setIsVisible(false)
-      setIsPressed(false)
-      setVariant('default')
+      syncVisibleState(false)
+      setIsInteractive(false)
       resetCursor()
     }
 
-    const handlePointerDown = (event) => {
-      if (resolveCursorVariant(event.target) === 'text') {
-        return
-      }
-
-      setIsPressed(true)
-    }
-
-    const handlePointerUp = () => {
-      setIsPressed(false)
-    }
-
-    window.addEventListener('mousemove', handlePointerMove)
-    window.addEventListener('pointermove', handlePointerMove)
-    document.addEventListener('mouseleave', handlePointerLeave)
-    window.addEventListener('mousedown', handlePointerDown)
-    window.addEventListener('pointerdown', handlePointerDown)
-    window.addEventListener('mouseup', handlePointerUp)
-    window.addEventListener('pointerup', handlePointerUp)
-    window.addEventListener('blur', handlePointerLeave)
+    window.addEventListener('pointermove', handlePointerMove, { passive: true })
+    document.addEventListener('mouseleave', handlePointerLeave, { passive: true })
+    window.addEventListener('blur', handlePointerLeave, { passive: true })
 
     return () => {
-      window.removeEventListener('mousemove', handlePointerMove)
       window.removeEventListener('pointermove', handlePointerMove)
       document.removeEventListener('mouseleave', handlePointerLeave)
-      window.removeEventListener('mousedown', handlePointerDown)
-      window.removeEventListener('pointerdown', handlePointerDown)
-      window.removeEventListener('mouseup', handlePointerUp)
-      window.removeEventListener('pointerup', handlePointerUp)
       window.removeEventListener('blur', handlePointerLeave)
     }
   }, [isEnabled])
@@ -316,44 +226,14 @@ function CursorEffect() {
     return null
   }
 
-  const className = [
-    'cursor-effects',
-    isVisible ? 'visible' : '',
-    isPressed ? 'active' : '',
-    variant === 'interactive' ? 'interactive' : '',
-  ]
+  const className = ['cursor-effects', isVisible ? 'visible' : '', isInteractive ? 'interactive' : '']
     .filter(Boolean)
     .join(' ')
 
   return (
     <div className={className} aria-hidden="true">
-      <svg className="cursor-trail-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
-        <path ref={trailGlowPathRef} className="cursor-trail-path cursor-trail-path-glow"></path>
-        <path ref={trailCorePathRef} className="cursor-trail-path cursor-trail-path-core"></path>
-        <path ref={trailAccentPathRef} className="cursor-trail-path cursor-trail-path-accent"></path>
-      </svg>
-      {trailScales.map((scale, index) => (
-        <div
-          key={scale}
-          ref={(node) => {
-            trailNodeRefs.current[index] = node
-          }}
-          className="cursor-effect cursor-trail-node"
-          style={{ '--trail-opacity': trailOpacities[index] }}
-        ></div>
-      ))}
-      {sparkleParticles.map((particle) => (
-        <div
-          key={`${particle.distance}-${particle.spread}`}
-          className="cursor-effect cursor-sparkle"
-          style={{
-            '--spark-distance': `${particle.distance}px`,
-            '--spark-spread': `${particle.spread}px`,
-            '--spark-scale': particle.scale,
-            '--spark-delay': particle.delay,
-          }}
-        ></div>
-      ))}
+      <div ref={cursorRef} className="cursor"></div>
+      <div ref={trailRef} className="cursor-trail"></div>
     </div>
   )
 }

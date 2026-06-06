@@ -20,13 +20,11 @@ import {
   hourlyPricing,
   offers,
   pricingMatrix,
-  reviews,
   setups,
   socialLinks,
   timeSlots,
   tournaments,
   userDashboardSeed,
-  whyChoose,
 } from './data/siteData'
 
 const initialBookingForm = {
@@ -341,9 +339,7 @@ function App() {
         gallery={gallery}
         contact={contactDetails}
         setups={setups}
-        whyChoose={whyChoose}
         pricingMatrix={pricingMatrix}
-        reviews={reviews}
         footerLinks={footerLinks}
         socialLinks={socialLinks}
         onNavigate={handleNavigate}

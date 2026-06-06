@@ -34,148 +34,53 @@
 .cursor-effects {
   position: fixed;
   inset: 0;
-  z-index: 60;
+  z-index: 70;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 140ms ease;
+  transition: opacity 160ms ease;
 }
 
 .cursor-effects.visible {
   opacity: 1;
 }
 
-.cursor-effect {
+.cursor,
+.cursor-trail {
   position: fixed;
   top: 0;
   left: 0;
   border-radius: 999px;
   pointer-events: none;
-  will-change: transform, opacity;
+  transform: translate(-50%, -50%);
+  will-change: left, top, width, height, border-color;
 }
 
-.cursor-trail-svg {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: visible;
-  opacity: calc(0.36 + (var(--cursor-intensity) * 0.72));
+.cursor {
+  width: 12px;
+  height: 12px;
+  background: #06b6d4;
+  z-index: 9999;
+  box-shadow: 0 0 15px #06b6d4, 0 0 30px #8b5cf6;
 }
 
-.cursor-trail-path {
-  fill: none;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.cursor-trail {
+  width: 40px;
+  height: 40px;
+  border: 2px solid #8b5cf6;
+  z-index: 9998;
+  box-shadow: 0 0 25px #8b5cf6;
+  transition:
+    width 180ms ease,
+    height 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease;
 }
 
-.cursor-trail-path-glow {
-  stroke: rgba(169, 86, 255, 0.42);
-  stroke-width: 28;
-  filter: blur(14px);
-}
-
-.cursor-trail-path-core {
-  stroke: rgba(158, 63, 255, 0.76);
-  stroke-width: 12;
-  filter: blur(2px);
-}
-
-.cursor-trail-path-accent {
-  stroke: rgba(249, 240, 255, 0.96);
-  stroke-width: 4;
-}
-
-.cursor-trail-node {
-  width: 30px;
-  height: 30px;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 0.95) 0%,
-    rgba(232, 198, 255, 0.78) 18%,
-    rgba(173, 92, 255, 0.38) 46%,
-    rgba(99, 31, 201, 0) 74%
-  );
-  opacity: var(--trail-opacity);
-  filter: blur(2px);
-  mix-blend-mode: screen;
-}
-
-.cursor-sparkle {
-  width: 8px;
-  height: 8px;
-  border-radius: 999px;
-  background: radial-gradient(
-    circle,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(230, 196, 255, 0.94) 26%,
-    rgba(160, 78, 255, 0.28) 58%,
-    rgba(99, 31, 201, 0) 82%
-  );
-  opacity: calc(0.18 + (var(--cursor-intensity) * 0.74));
-  filter: blur(0.8px);
-  mix-blend-mode: screen;
-  transform:
-    translate3d(var(--cursor-x), var(--cursor-y), 0)
-    rotate(calc(var(--cursor-angle) + 180deg))
-    translateX(calc(var(--spark-distance) * var(--cursor-intensity)))
-    translateY(var(--spark-spread))
-    scale(var(--spark-scale));
-  animation: cursor-sparkle-flicker 1.6s ease-in-out infinite;
-  animation-delay: var(--spark-delay);
-}
-
-.cursor-effects.interactive .cursor-trail-svg {
-  opacity: calc(0.42 + (var(--cursor-intensity) * 0.82));
-}
-
-.cursor-effects.interactive .cursor-sparkle {
-  opacity: calc(0.28 + (var(--cursor-intensity) * 0.78));
-}
-
-.cursor-effects.active .cursor-trail-svg {
-  opacity: calc(0.16 + (var(--cursor-intensity) * 0.58));
-}
-
-.cursor-effects.active .cursor-sparkle {
-  opacity: calc(0.14 + (var(--cursor-intensity) * 0.42));
-}
-
-:is(
-    .primary-button,
-    .secondary-button,
-    .text-button,
-    .alpha-button-link,
-    .alpha-login-button,
-    .alpha-signup-button,
-    .alpha-nav-link,
-    .alpha-profile-avatar
-  ) {
-  position: relative;
-  overflow: hidden;
-  isolation: isolate;
-}
-
-@keyframes cursor-sparkle-flicker {
-  0%,
-  100% {
-    opacity: calc(0.18 + (var(--cursor-intensity) * 0.66));
-    transform:
-      translate3d(var(--cursor-x), var(--cursor-y), 0)
-      rotate(calc(var(--cursor-angle) + 180deg))
-      translateX(calc(var(--spark-distance) * var(--cursor-intensity)))
-      translateY(var(--spark-spread))
-      scale(var(--spark-scale));
-  }
-
-  50% {
-    opacity: calc(0.3 + (var(--cursor-intensity) * 0.86));
-    transform:
-      translate3d(var(--cursor-x), var(--cursor-y), 0)
-      rotate(calc(var(--cursor-angle) + 180deg))
-      translateX(calc(var(--spark-distance) * var(--cursor-intensity)))
-      translateY(calc(var(--spark-spread) * 1.08))
-      scale(calc(var(--spark-scale) * 1.16));
-  }
+.cursor-effects.interactive .cursor-trail {
+  width: 65px;
+  height: 65px;
+  border-color: #06b6d4;
+  box-shadow: 0 0 25px #06b6d4;
 }
 
 main {
@@ -1974,11 +1879,13 @@ main {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 48px;
-  padding: 12px 22px;
+  min-height: 54px;
+  padding: 0 24px;
   border-radius: 999px;
   font-weight: 600;
   letter-spacing: 0.02em;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .primary-button,
@@ -2080,7 +1987,7 @@ main {
   gap: 20px;
   width: min(1380px, 100%);
   margin: 0 auto;
-  padding: 14px 18px;
+  padding: 16px 20px;
   border: 1px solid rgba(202, 233, 234, 0.12);
   border-radius: 999px;
   background: rgba(10, 15, 17, 0.62);
@@ -2104,30 +2011,27 @@ main {
 .alpha-logo-shell {
   display: grid;
   place-items: center;
-  border: 1px solid rgba(202, 233, 234, 0.16);
+  border: 1px solid rgba(202, 233, 234, 0.1);
   border-radius: 999px;
   overflow: hidden;
-  background:
-    radial-gradient(circle at top, rgba(202, 233, 234, 0.18), rgba(43, 140, 140, 0.16)),
-    rgba(7, 14, 16, 0.92);
+  background: rgba(8, 12, 18, 0.92);
   box-shadow:
-    inset 0 1px 0 rgba(202, 233, 234, 0.08),
-    0 18px 34px rgba(0, 0, 0, 0.24),
-    0 0 26px rgba(43, 140, 140, 0.14);
+    inset 0 1px 0 rgba(202, 233, 234, 0.04),
+    0 12px 24px rgba(0, 0, 0, 0.18);
 }
 
 .alpha-logo-shell-sm {
   width: 72px;
   height: 72px;
   min-width: 72px;
-  padding: 10px;
+  padding: 0;
 }
 
 .alpha-logo-shell-md {
   width: 104px;
   height: 104px;
   min-width: 104px;
-  padding: 12px;
+  padding: 0;
 }
 
 .alpha-logo-shell-lg {
@@ -2138,8 +2042,16 @@ main {
 }
 
 .alpha-brand-logo,
-.alpha-hero-logo,
 .alpha-footer-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1);
+  filter: drop-shadow(0 10px 20px rgba(43, 140, 140, 0.12));
+}
+
+.alpha-hero-logo {
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -2189,11 +2101,16 @@ main {
 
 .alpha-nav-link {
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   flex: 0 0 auto;
-  padding: 10px 14px;
+  min-height: 54px;
+  padding: 0 20px;
   border: 1px solid transparent;
   border-radius: 999px;
   color: rgba(202, 233, 234, 0.8);
+  line-height: 1;
   background: transparent;
   transition:
     transform 180ms ease,
@@ -2236,14 +2153,14 @@ main {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 12px;
 }
 
 .alpha-profile-avatar {
   display: grid;
   place-items: center;
-  width: 48px;
-  height: 48px;
+  width: 54px;
+  height: 54px;
   padding: 0;
   border: 1px solid rgba(202, 233, 234, 0.14);
   border-radius: 999px;

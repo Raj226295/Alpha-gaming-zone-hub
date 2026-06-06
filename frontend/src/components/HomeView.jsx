@@ -1,16 +1,12 @@
 import SectionHeading from './SectionHeading'
 import heroGamingZoneBanner from '../assets/gaming/hero-gaming-zone-banner.png'
-import alphaCrest from '../assets/gaming/alpha-crest.svg'
+import alphaLogoNight from '../assets/gaming/alpha-logo-night.png'
 
 function HomeView({
   tournaments,
   offers,
-  gallery,
   contact,
   setups,
-  whyChoose,
-  pricingMatrix,
-  reviews,
   footerLinks,
   socialLinks,
   onNavigate,
@@ -132,91 +128,19 @@ function HomeView({
 
       <section className="section-block">
         <SectionHeading
-          eyebrow="Why choose Alpha Gaming"
-          title="Designed like a premium esports lounge, not a generic gaming cafe."
-          description="Comfort, speed, visual polish, and modern gaming hardware come together for a high-end social experience."
+          eyebrow="Special offers"
+          title="Premium perks crafted for first-timers, weekend squads, and tournament regulars."
+          description="Use these offers to unlock more play time, better value, and faster entry into featured events."
         />
 
-        <div className="alpha-feature-grid">
-          {whyChoose.map((feature) => (
-            <article key={feature.id} className="alpha-feature-card glass-card">
-              <span className="alpha-feature-tag">{feature.tag}</span>
-              <h3>{feature.title}</h3>
-              <p>{feature.description}</p>
+        <div className="alpha-offer-grid">
+          {offers.map((offer) => (
+            <article key={offer.title} className="alpha-offer-card glass-card">
+              <span className="accent-badge">{offer.badge}</span>
+              <h3>{offer.title}</h3>
+              <p>{offer.description}</p>
             </article>
           ))}
-        </div>
-      </section>
-
-      <section className="section-block alpha-discover-section">
-        <div className="glass-panel alpha-discover-panel">
-          <SectionHeading
-            eyebrow="Explore on demand"
-            title="Pricing and gallery stay one tap away, not dumped onto the homepage."
-            description="This keeps the first experience cleaner while still giving quick access when someone wants rates or venue visuals."
-          />
-
-          <div className="alpha-discover-grid">
-            <article className="glass-card alpha-discover-card">
-              <span className="accent-badge">{pricingMatrix.length} pricing lanes</span>
-              <h3>Pricing</h3>
-              <p>Open the dedicated pricing screen for hourly rates, bundle plans, and booking-ready details.</p>
-              <button type="button" className="secondary-button" onClick={() => onNavigate('pricing')}>
-                Open Pricing
-              </button>
-            </article>
-
-            <article className="glass-card alpha-discover-card">
-              <span className="accent-badge">{gallery.length} gallery shots</span>
-              <h3>Gallery</h3>
-              <p>See the full lounge visuals in a separate gallery view instead of stretching the homepage longer.</p>
-              <button type="button" className="secondary-button" onClick={() => onNavigate('gallery')}>
-                Open Gallery
-              </button>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section className="alpha-split-showcase">
-        <div className="section-block">
-          <SectionHeading
-            eyebrow="Customer reviews"
-            title="Five-star reactions from players who came for one match and stayed for the vibe."
-            description="The glow, comfort, and competitive energy keep players coming back for more."
-          />
-
-          <div className="alpha-review-grid">
-            {reviews.map((review) => (
-              <article key={review.id} className="alpha-review-card glass-card">
-                <span className="alpha-review-score">5-Star Review</span>
-                <h3>{review.title}</h3>
-                <p>{review.quote}</p>
-                <div className="alpha-review-author">
-                  <strong>{review.author}</strong>
-                  <span>{review.role}</span>
-                </div>
-              </article>
-            ))}
-          </div>
-        </div>
-
-        <div className="section-block">
-          <SectionHeading
-            eyebrow="Special offers"
-            title="Premium perks crafted for first-timers, weekend squads, and tournament regulars."
-            description="Use these offers to unlock more play time, better value, and faster entry into featured events."
-          />
-
-          <div className="alpha-offer-grid">
-            {offers.map((offer) => (
-              <article key={offer.title} className="alpha-offer-card glass-card">
-                <span className="accent-badge">{offer.badge}</span>
-                <h3>{offer.title}</h3>
-                <p>{offer.description}</p>
-              </article>
-            ))}
-          </div>
         </div>
       </section>
 
@@ -294,7 +218,7 @@ function HomeView({
       <footer id="footer-section" className="alpha-footer glass-panel">
         <div className="alpha-footer-brand">
           <span className="alpha-logo-shell alpha-logo-shell-md">
-            <img src={alphaCrest} alt="Alpha Gaming crest" className="alpha-footer-logo" />
+            <img src={alphaLogoNight} alt="Alpha Gaming logo" className="alpha-footer-logo" />
           </span>
           <div>
             <p className="alpha-hero-brand">ALPHA GAMING</p>

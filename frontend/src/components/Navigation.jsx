@@ -1,10 +1,10 @@
-import alphaLogoPremium from '../assets/gaming/alpha-logo-premium.png'
+import alphaLogoNight from '../assets/gaming/alpha-logo-night.png'
 
 const navItems = [
   { id: 'home', label: 'Home', view: 'home', sectionId: 'home' },
-  { id: 'gaming-setup', label: 'Gaming Setup', view: 'home', sectionId: 'gaming-setups' },
+  { id: 'gaming-setup', label: 'Gaming Setup', view: 'setups' },
   { id: 'book-slot', label: 'Book Slot', view: 'booking' },
-  { id: 'tournament', label: 'Tournament', view: 'home', sectionId: 'tournament-section' },
+  { id: 'tournament', label: 'Tournament', view: 'tournaments' },
   { id: 'pricing', label: 'Pricing', view: 'pricing' },
   { id: 'gallery', label: 'Gallery', view: 'gallery' },
 ]
@@ -56,7 +56,7 @@ function Navigation({ activeView, onNavigate, profile }) {
           onClick={() => onNavigate('home', { sectionId: 'home' })}
         >
           <span className="alpha-logo-shell alpha-logo-shell-sm">
-            <img src={alphaLogoPremium} alt="Alpha Gaming logo" className="alpha-brand-logo" />
+            <img src={alphaLogoNight} alt="Alpha Gaming logo" className="alpha-brand-logo" />
           </span>
           <span className="alpha-brand-copy">
             <strong>ALPHA GAMING</strong>
