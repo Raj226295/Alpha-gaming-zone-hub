@@ -9,17 +9,6 @@ const navItems = [
   { id: 'gallery', label: 'Gallery', view: 'gallery' },
 ]
 
-function getProfileInitials(profile) {
-  const source = profile.fullName?.trim() || profile.gamerTag?.trim() || 'AG'
-  const parts = source.split(/\s+/).filter(Boolean)
-
-  if (parts.length === 1) {
-    return parts[0].slice(0, 2).toUpperCase()
-  }
-
-  return `${parts[0][0] ?? ''}${parts[1][0] ?? ''}`.toUpperCase()
-}
-
 function isItemActive(itemId, activeView) {
   if (itemId === 'book-slot') {
     return activeView === 'booking'
@@ -44,9 +33,7 @@ function isItemActive(itemId, activeView) {
   return activeView === 'home' && itemId === 'home'
 }
 
-function Navigation({ activeView, onNavigate, profile }) {
-  const initials = getProfileInitials(profile)
-
+function Navigation({ activeView, onNavigate }) {
   return (
     <header className="alpha-header-shell">
       <div className="alpha-header">
@@ -78,19 +65,12 @@ function Navigation({ activeView, onNavigate, profile }) {
         </nav>
 
         <div className="alpha-nav-actions">
-          <button type="button" className="alpha-login-button" onClick={() => onNavigate('dashboard')}>
-            Login
-          </button>
-          <button type="button" className="alpha-signup-button" onClick={() => onNavigate('dashboard')}>
-            Sign Up
-          </button>
           <button
             type="button"
-            className={activeView === 'dashboard' ? 'alpha-profile-avatar active' : 'alpha-profile-avatar'}
-            onClick={() => onNavigate('dashboard')}
-            aria-label="Open profile dashboard"
+            className={activeView === 'login' ? 'alpha-login-button active' : 'alpha-login-button'}
+            onClick={() => onNavigate('login')}
           >
-            {initials}
+            Login
           </button>
         </div>
       </div>

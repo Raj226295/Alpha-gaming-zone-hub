@@ -7,6 +7,7 @@ import BookingView from './components/BookingView'
 import TournamentView from './components/TournamentView'
 import PricingView from './components/PricingView'
 import GalleryView from './components/GalleryView'
+import AuthView from './components/AuthView'
 import CursorEffect from './components/CursorEffect'
 import UserDashboardView from './components/UserDashboardView'
 import AdminDashboardView from './components/AdminDashboardView'
@@ -47,6 +48,23 @@ const initialTournamentForm = {
   paymentMethod: 'UPI',
 }
 
+const initialLoginForm = {
+  identity: '',
+  password: '',
+  rememberMe: false,
+}
+
+const initialSignupForm = {
+  fullName: '',
+  username: '',
+  email: '',
+  phone: '',
+  password: '',
+  confirmPassword: '',
+  birthDate: '',
+  city: '',
+}
+
 function formatDisplayDate(isoDate) {
   return new Date(`${isoDate}T12:00:00`).toLocaleDateString('en-IN', {
     day: '2-digit',
@@ -68,6 +86,8 @@ function App() {
   const [tournamentForm, setTournamentForm] = useState(initialTournamentForm)
   const [tournamentPass, setTournamentPass] = useState(null)
   const [profile, setProfile] = useState(defaultProfile)
+  const [loginForm, setLoginForm] = useState(initialLoginForm)
+  const [signupForm, setSignupForm] = useState(initialSignupForm)
 
   const selectedSetup =
     setups.find((setup) => setup.id === bookingForm.setupId) ?? setups[0]
@@ -250,6 +270,47 @@ function App() {
     }))
   }
 
+  function handleLoginField(field, value) {
+    setLoginForm((current) => ({
+      ...current,
+      [field]: value,
+    }))
+  }
+
+  function handleSignupField(field, value) {
+    setSignupForm((current) => ({
+      ...current,
+      [field]: value,
+    }))
+  }
+
+  function handleLogin() {
+    const identity = loginForm.identity.trim()
+
+    if (identity) {
+      setProfile((current) => ({
+        ...current,
+        email: identity.includes('@') ? identity : current.email,
+        phone: identity.includes('@') ? current.phone : identity,
+      }))
+    }
+
+    handleNavigate('dashboard')
+  }
+
+  function handleSignup() {
+    setProfile((current) => ({
+      ...current,
+      fullName: signupForm.fullName.trim() || current.fullName,
+      gamerTag: signupForm.username.trim() || current.gamerTag,
+      email: signupForm.email.trim() || current.email,
+      phone: signupForm.phone.trim() || current.phone,
+      city: signupForm.city.trim() || current.city,
+    }))
+
+    handleNavigate('dashboard')
+  }
+
   function renderView() {
     if (deferredView === 'setups') {
       return (
@@ -308,6 +369,36 @@ function App() {
       return <GalleryView gallery={gallery} onNavigate={handleNavigate} />
     }
 
+    if (deferredView === 'login') {
+      return (
+        <AuthView
+          mode="login"
+          loginForm={loginForm}
+          signupForm={signupForm}
+          onLoginField={handleLoginField}
+          onSignupField={handleSignupField}
+          onSubmitLogin={handleLogin}
+          onSubmitSignup={handleSignup}
+          onNavigate={handleNavigate}
+        />
+      )
+    }
+
+    if (deferredView === 'signup') {
+      return (
+        <AuthView
+          mode="signup"
+          loginForm={loginForm}
+          signupForm={signupForm}
+          onLoginField={handleLoginField}
+          onSignupField={handleSignupField}
+          onSubmitLogin={handleLogin}
+          onSubmitSignup={handleSignup}
+          onNavigate={handleNavigate}
+        />
+      )
+    }
+
     if (deferredView === 'dashboard') {
       return (
         <UserDashboardView
@@ -354,8 +445,12 @@ function App() {
       <div className="ambient ambient-left"></div>
       <div className="ambient ambient-right"></div>
       <CursorEffect />
-      <Navigation activeView={activeView} onNavigate={handleNavigate} profile={profile} />
-      <main>{renderView()}</main>
+      <Navigation activeView={activeView} onNavigate={handleNavigate} />
+      <main>
+        <div key={deferredView} className="page-transition-shell" data-view={deferredView}>
+          {renderView()}
+        </div>
+      </main>
     </div>
   )
 }
