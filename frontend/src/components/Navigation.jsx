@@ -33,7 +33,7 @@ function isItemActive(itemId, activeView) {
   return activeView === 'home' && itemId === 'home'
 }
 
-function Navigation({ activeView, onNavigate }) {
+function Navigation({ activeView, isLoggedIn, onNavigate, profile }) {
   return (
     <header className="alpha-header-shell">
       <div className="alpha-header">
@@ -65,12 +65,17 @@ function Navigation({ activeView, onNavigate }) {
         </nav>
 
         <div className="alpha-nav-actions">
+          {isLoggedIn ? <span className="status-pill nav-status-pill">{profile.gamerTag}</span> : null}
           <button
             type="button"
-            className={activeView === 'login' ? 'alpha-login-button active' : 'alpha-login-button'}
-            onClick={() => onNavigate('login')}
+            className={
+              activeView === (isLoggedIn ? 'dashboard' : 'login')
+                ? 'alpha-login-button active'
+                : 'alpha-login-button'
+            }
+            onClick={() => onNavigate(isLoggedIn ? 'dashboard' : 'login')}
           >
-            Login
+            {isLoggedIn ? 'My Account' : 'Login'}
           </button>
         </div>
       </div>

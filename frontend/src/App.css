@@ -3099,6 +3099,282 @@ main {
   text-decoration: none;
 }
 
+.primary-button:disabled,
+.secondary-button:disabled {
+  opacity: 0.68;
+  cursor: wait;
+  transform: none;
+}
+
+.nav-status-pill {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboard-field-stack,
+.modal-copy-block,
+.tournament-modal-form,
+.tournament-success-details {
+  display: grid;
+}
+
+.dashboard-field-stack {
+  gap: 6px;
+}
+
+.tournament-row-end {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.status-pending {
+  border-color: rgba(8, 247, 254, 0.44);
+  color: #d9feff;
+  background: rgba(8, 247, 254, 0.14);
+}
+
+.status-approved {
+  border-color: rgba(78, 255, 174, 0.42);
+  color: #dcffe8;
+  background: rgba(78, 255, 174, 0.14);
+}
+
+.status-rejected {
+  border-color: rgba(255, 107, 129, 0.4);
+  color: #ffe1e7;
+  background: rgba(255, 107, 129, 0.14);
+}
+
+.form-feedback {
+  margin: 0;
+  color: rgba(202, 233, 234, 0.82);
+  font-size: 0.95rem;
+}
+
+.form-feedback-error {
+  color: #ffb9c7;
+}
+
+.form-feedback-success {
+  color: #b9ffe2;
+}
+
+.auth-context-banner {
+  display: grid;
+  gap: 10px;
+  padding: 16px 18px;
+  border: 1px solid rgba(8, 247, 254, 0.18);
+  border-radius: 18px;
+  background: linear-gradient(180deg, rgba(8, 247, 254, 0.08), rgba(9, 15, 24, 0.82));
+}
+
+.auth-context-banner p {
+  margin: 0;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background:
+    radial-gradient(circle at top, rgba(8, 247, 254, 0.12), transparent 36%),
+    rgba(4, 10, 16, 0.78);
+  backdrop-filter: blur(18px);
+  animation: modal-backdrop-in 220ms ease;
+}
+
+.modal-panel {
+  position: relative;
+  width: min(720px, 100%);
+  padding: 28px;
+  border: 1px solid rgba(8, 247, 254, 0.18);
+  border-radius: 28px;
+  background:
+    linear-gradient(180deg, rgba(7, 14, 22, 0.98), rgba(7, 12, 18, 0.94)),
+    rgba(6, 12, 18, 0.96);
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.42),
+    0 0 42px rgba(8, 247, 254, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  animation: modal-panel-in 240ms ease;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  min-height: auto;
+  padding: 8px 12px;
+  border: 1px solid rgba(202, 233, 234, 0.12);
+  border-radius: 999px;
+  color: rgba(202, 233, 234, 0.86);
+  background: rgba(202, 233, 234, 0.06);
+}
+
+.modal-close-button:hover {
+  border-color: rgba(8, 247, 254, 0.4);
+  color: #f4ffff;
+}
+
+.tournament-modal-panel {
+  display: grid;
+  gap: 24px;
+}
+
+.tournament-auth-panel {
+  width: min(520px, 100%);
+}
+
+.tournament-modal-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: start;
+}
+
+.modal-copy-block {
+  gap: 12px;
+}
+
+.modal-copy-block h2 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: clamp(1.8rem, 2vw, 2.3rem);
+}
+
+.modal-copy-block p {
+  margin: 0;
+  color: rgba(202, 233, 234, 0.76);
+}
+
+.tournament-highlight-card {
+  display: grid;
+  gap: 8px;
+  min-width: 210px;
+  padding: 18px;
+  border: 1px solid rgba(8, 247, 254, 0.16);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(8, 247, 254, 0.08), rgba(8, 12, 18, 0.9)),
+    rgba(7, 14, 22, 0.96);
+  text-align: right;
+}
+
+.tournament-highlight-card span,
+.tournament-success-details span {
+  color: rgba(202, 233, 234, 0.62);
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.tournament-highlight-card strong,
+.tournament-success-details strong {
+  color: #f6ffff;
+}
+
+.tournament-highlight-card p {
+  margin: 0;
+  color: rgba(202, 233, 234, 0.84);
+}
+
+.tournament-modal-form {
+  gap: 18px;
+}
+
+.tournament-modal-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.modal-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid rgba(202, 233, 234, 0.12);
+  border-radius: 18px;
+  color: rgba(202, 233, 234, 0.86);
+  background: rgba(202, 233, 234, 0.04);
+}
+
+.modal-checkbox input {
+  width: 18px;
+  height: 18px;
+  accent-color: #08f7fe;
+}
+
+.modal-action-row {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.tournament-success-panel {
+  width: min(560px, 100%);
+  justify-items: start;
+}
+
+.tournament-success-icon {
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  border: 1px solid rgba(78, 255, 174, 0.36);
+  border-radius: 20px;
+  color: #031011;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  background: linear-gradient(135deg, rgba(202, 233, 234, 0.98), rgba(78, 255, 174, 0.92));
+  box-shadow:
+    0 12px 34px rgba(78, 255, 174, 0.16),
+    0 0 26px rgba(78, 255, 174, 0.18);
+}
+
+.tournament-success-details {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  width: 100%;
+}
+
+.tournament-success-details div {
+  display: grid;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid rgba(202, 233, 234, 0.1);
+  border-radius: 20px;
+  background: rgba(202, 233, 234, 0.04);
+}
+
+@keyframes modal-backdrop-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-panel-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 @media (max-width: 1240px) {
   .alpha-hero-banner,
   .alpha-split-showcase,
@@ -3188,6 +3464,16 @@ main {
   .alpha-gallery-tile:nth-child(1) {
     grid-column: span 2;
   }
+
+  .tournament-modal-header,
+  .tournament-success-details {
+    grid-template-columns: 1fr;
+  }
+
+  .tournament-highlight-card,
+  .tournament-row-end {
+    text-align: left;
+  }
 }
 
 @media (max-width: 720px) {
@@ -3271,6 +3557,35 @@ main {
 
   .alpha-contact-card-wide {
     grid-column: auto;
+  }
+
+  .modal-backdrop {
+    padding: 14px;
+  }
+
+  .modal-panel {
+    padding: 22px 18px;
+    border-radius: 24px;
+  }
+
+  .modal-close-button {
+    position: static;
+    justify-self: end;
+  }
+
+  .tournament-modal-grid,
+  .tournament-success-details {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-action-row,
+  .modal-action-row .primary-button,
+  .modal-action-row .secondary-button {
+    width: 100%;
+  }
+
+  .nav-status-pill {
+    max-width: none;
   }
 
   .alpha-pricing-row {

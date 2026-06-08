@@ -1,6 +1,6 @@
 import SectionHeading from './SectionHeading'
 
-function AdminDashboardView({ admin, offers, setups, bookingConfirmation, tournamentPass }) {
+function AdminDashboardView({ admin, offers, setups, bookingConfirmation, latestTournamentRegistration }) {
   return (
     <div className="view-stack">
       <section className="section-block">
@@ -70,10 +70,12 @@ function AdminDashboardView({ admin, offers, setups, bookingConfirmation, tourna
                   </p>
                 </div>
               ) : null}
-              {tournamentPass ? (
+              {latestTournamentRegistration ? (
                 <div className="list-row solo-row">
                   <p>
-                    Tournament pass {tournamentPass.id} created for team {tournamentPass.teamName}.
+                    Tournament registration {latestTournamentRegistration.id} received for team{' '}
+                    {latestTournamentRegistration.teamName} in{' '}
+                    {latestTournamentRegistration.tournamentName}.
                   </p>
                 </div>
               ) : null}

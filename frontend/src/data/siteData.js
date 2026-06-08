@@ -429,6 +429,7 @@ export const contactDetails = {
 }
 
 export const defaultProfile = {
+  id: 'player-neon-rider',
   gamerTag: 'NeonRider',
   fullName: 'Raj Singh',
   email: 'raj@alphagamingzone.gg',
@@ -463,11 +464,18 @@ export const userDashboardSeed = {
   ],
   tournaments: [
     {
-      id: 'PASS-741',
-      title: 'Valorant Cup',
-      date: 'June 21, 2026',
-      team: 'Pixel Raiders',
-      status: 'Registered',
+      id: 'REG-741221',
+      tournamentId: 'valorant-cup',
+      tournamentName: 'Valorant Cup',
+      tournamentDate: 'June 21, 2026',
+      tournamentTime: '2:00 PM',
+      registrationDate: '30 May 2026',
+      teamName: 'Pixel Raiders',
+      captainName: 'Raj Singh',
+      mobileNumber: '+91 90000 11122',
+      gameId: 'NeonRider#7781',
+      status: 'Approved',
+      matchSchedule: 'Quarterfinals | June 21, 2026 | 4:30 PM',
     },
   ],
   paymentHistory: [

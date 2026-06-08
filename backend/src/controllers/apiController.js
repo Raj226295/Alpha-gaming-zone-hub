@@ -1,4 +1,21 @@
-import { couponLookup, mockData, pricingLookup } from '../data/mockData.js'
+import {
+  couponLookup,
+  mockData,
+  pricingLookup,
+  tournamentRegistrationStore,
+} from '../data/mockData.js'
+
+function formatRegistrationDate(timestamp) {
+  return new Date(timestamp).toLocaleDateString('en-IN', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric',
+  })
+}
+
+function createRegistrationId() {
+  return `REG-${Math.floor(100000 + Math.random() * 900000)}`
+}
 
 export function getHealth() {
   return {
@@ -50,6 +67,20 @@ export function getAdminDashboard() {
   }
 }
 
+export function getTournamentRegistrations(userId = '') {
+  if (!userId) {
+    return {
+      statusCode: 200,
+      payload: [],
+    }
+  }
+
+  return {
+    statusCode: 200,
+    payload: tournamentRegistrationStore.filter((registration) => registration.userId === userId),
+  }
+}
+
 export function createBookingQuote(body = {}) {
   const price = pricingLookup[body.setupId] ?? pricingLookup.ps5
   const slot = mockData.slots.find((item) => item.id === body.slotId) ?? mockData.slots[0]
@@ -75,18 +106,62 @@ export function createBookingQuote(body = {}) {
 
 export function registerTournament(body = {}) {
   const tournament =
-    mockData.tournaments.find((item) => item.id === body.tournamentId) ?? mockData.tournaments[0]
+    mockData.tournaments.find((item) => item.id === body.tournamentId) ?? null
+
+  const teamName = body.teamName?.trim()
+  const captainName = body.captainName?.trim()
+  const mobileNumber = body.mobileNumber?.trim()
+  const gameId = body.gameId?.trim()
+
+  if (!body.userId || !teamName || !captainName || !mobileNumber || !gameId) {
+    return {
+      statusCode: 400,
+      payload: {
+        message: 'Missing required registration details.',
+      },
+    }
+  }
+
+  if (!body.agreeToRules) {
+    return {
+      statusCode: 400,
+      payload: {
+        message: 'Tournament rules must be accepted before registering.',
+      },
+    }
+  }
+
+  if (!tournament) {
+    return {
+      statusCode: 404,
+      payload: {
+        message: 'Tournament not found.',
+      },
+    }
+  }
+
+  const createdAt = new Date().toISOString()
+  const registration = {
+    id: createRegistrationId(),
+    userId: body.userId,
+    tournamentId: tournament.id,
+    tournamentName: tournament.title,
+    tournamentDate: tournament.date,
+    tournamentTime: tournament.time,
+    registrationDate: formatRegistrationDate(createdAt),
+    teamName,
+    captainName,
+    mobileNumber,
+    gameId,
+    status: 'Pending Approval',
+    matchSchedule: 'Schedule will appear here once the bracket is published.',
+    createdAt,
+  }
+
+  tournamentRegistrationStore.unshift(registration)
 
   return {
     statusCode: 201,
-    payload: {
-      passId: `PASS-${Math.floor(100 + Math.random() * 900)}`,
-      title: tournament.title,
-      teamName: body.teamName || 'Walk-in Squad',
-      captain: body.captain || 'Team Captain',
-      fee: tournament.fee,
-      paymentMethod: body.paymentMethod || 'UPI',
-      checkIn: `${tournament.date} - 1 hour before start`,
-    },
+    payload: registration,
   }
 }

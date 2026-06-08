@@ -1,33 +1,20 @@
 import SectionHeading from './SectionHeading'
 
-function UserDashboardView({ dashboard, bookingConfirmation, tournamentPass, profile, onProfileChange }) {
-  const bookings = bookingConfirmation
-    ? [
-        {
-          id: bookingConfirmation.id,
-          setup: bookingConfirmation.setup,
-          date: bookingConfirmation.dateLabel,
-          slot: bookingConfirmation.slotLabel,
-          status: 'Just booked',
-          total: `Rs.${bookingConfirmation.total}`,
-        },
-        ...dashboard.bookings,
-      ]
-    : dashboard.bookings
+function getStatusClass(status = '') {
+  const normalizedStatus = status.toLowerCase()
 
-  const tournaments = tournamentPass
-    ? [
-        {
-          id: tournamentPass.id,
-          title: tournamentPass.title,
-          date: tournamentPass.date,
-          team: tournamentPass.teamName,
-          status: 'Generated now',
-        },
-        ...dashboard.tournaments,
-      ]
-    : dashboard.tournaments
+  if (normalizedStatus.includes('approved')) {
+    return 'status-approved'
+  }
 
+  if (normalizedStatus.includes('rejected')) {
+    return 'status-rejected'
+  }
+
+  return 'status-pending'
+}
+
+function UserDashboardView({ dashboard, bookings, tournaments, profile, onProfileChange }) {
   return (
     <div className="view-stack">
       <section className="section-block">
@@ -56,7 +43,7 @@ function UserDashboardView({ dashboard, bookingConfirmation, tournamentPass, pro
                   <div>
                     <strong>{booking.setup}</strong>
                     <p>
-                      {booking.date} • {booking.slot}
+                      {booking.date} | {booking.slot}
                     </p>
                   </div>
                   <div className="row-end">
@@ -73,15 +60,20 @@ function UserDashboardView({ dashboard, bookingConfirmation, tournamentPass, pro
             <div className="stack-list">
               {tournaments.map((tournament) => (
                 <div key={tournament.id} className="list-row">
-                  <div>
-                    <strong>{tournament.title}</strong>
-                    <p>
-                      {tournament.date} • {tournament.team}
-                    </p>
+                  <div className="dashboard-field-stack">
+                    <strong>{tournament.tournamentName}</strong>
+                    <p>Registration Date: {tournament.registrationDate}</p>
+                    <p>Team Name: {tournament.teamName}</p>
+                    <p>Match Schedule: {tournament.matchSchedule}</p>
                   </div>
-                  <div className="row-end">
-                    <span className="status-pill">{tournament.status}</span>
-                    <strong>{tournament.id}</strong>
+                  <div className="row-end tournament-row-end">
+                    <span className={`status-pill ${getStatusClass(tournament.status)}`}>
+                      {tournament.status}
+                    </span>
+                    <strong>
+                      {tournament.tournamentDate}
+                      {tournament.tournamentTime ? ` | ${tournament.tournamentTime}` : ''}
+                    </strong>
                   </div>
                 </div>
               ))}
@@ -98,7 +90,7 @@ function UserDashboardView({ dashboard, bookingConfirmation, tournamentPass, pro
                   <div>
                     <strong>{payment.label}</strong>
                     <p>
-                      {payment.date} • {payment.mode}
+                      {payment.date} | {payment.mode}
                     </p>
                   </div>
                   <div className="row-end">

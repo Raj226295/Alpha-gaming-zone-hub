@@ -1,4 +1,4 @@
-function TournamentView({ tournaments, onUpdateField }) {
+function TournamentView({ tournaments, onParticipateTournament }) {
   return (
     <div className="view-stack">
       <section className="tournament-preview-grid">
@@ -20,7 +20,7 @@ function TournamentView({ tournaments, onUpdateField }) {
               <button
                 type="button"
                 className="primary-button"
-                onClick={() => onUpdateField('tournamentId', tournament.id)}
+                onClick={() => onParticipateTournament(tournament.id)}
               >
                 Participate Now
               </button>

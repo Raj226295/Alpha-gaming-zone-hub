@@ -2,6 +2,9 @@ function AuthView({
   mode,
   loginForm,
   signupForm,
+  feedbackMessage,
+  feedbackTone,
+  contextNote,
   onLoginField,
   onSignupField,
   onSubmitLogin,
@@ -26,6 +29,25 @@ function AuthView({
                 : 'Fill in your player information to create your account.'}
             </p>
           </div>
+
+          {contextNote ? (
+            <div className="auth-context-banner">
+              <span className="status-pill">Tournament Registration</span>
+              <p>{contextNote}</p>
+            </div>
+          ) : null}
+
+          {feedbackMessage ? (
+            <p
+              className={
+                feedbackTone === 'error'
+                  ? 'form-feedback form-feedback-error'
+                  : 'form-feedback form-feedback-success'
+              }
+            >
+              {feedbackMessage}
+            </p>
+          ) : null}
 
           <form
             className="auth-form"

@@ -11,7 +11,7 @@ function HomeView({
   socialLinks,
   onNavigate,
   onSelectSetup,
-  onSelectTournament,
+  onParticipateTournament,
 }) {
   return (
     <div className="alpha-home">
@@ -113,10 +113,7 @@ function HomeView({
                 <button
                   type="button"
                   className="primary-button full-width"
-                  onClick={() => {
-                    onSelectTournament(tournament.id)
-                    onNavigate('tournaments')
-                  }}
+                  onClick={() => onParticipateTournament(tournament.id)}
                 >
                   Participate Now
                 </button>

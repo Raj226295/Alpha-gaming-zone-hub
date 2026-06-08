@@ -11,6 +11,10 @@ import AuthView from './components/AuthView'
 import CursorEffect from './components/CursorEffect'
 import UserDashboardView from './components/UserDashboardView'
 import AdminDashboardView from './components/AdminDashboardView'
+import TournamentAuthPromptModal from './components/TournamentAuthPromptModal'
+import TournamentRegistrationModal from './components/TournamentRegistrationModal'
+import TournamentSuccessModal from './components/TournamentSuccessModal'
+import { fetchTournamentRegistrations, registerTournamentEntry } from './lib/tournamentRegistration'
 import {
   adminDashboardSeed,
   contactDetails,
@@ -35,16 +39,6 @@ const initialBookingForm = {
   players: 2,
   controllers: 1,
   coupon: '',
-  paymentMethod: 'UPI',
-}
-
-const initialTournamentForm = {
-  tournamentId: tournaments[0].id,
-  teamName: '',
-  captain: '',
-  contact: '',
-  email: '',
-  roster: '',
   paymentMethod: 'UPI',
 }
 
@@ -73,6 +67,29 @@ function formatDisplayDate(isoDate) {
   })
 }
 
+function createTournamentForm(profile) {
+  return {
+    teamName: '',
+    captainName: profile.fullName ?? '',
+    mobileNumber: profile.phone ?? '',
+    gameId: '',
+    agreeToRules: true,
+  }
+}
+
+function createUserId(seedValue) {
+  const normalizedSeed = seedValue
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
+
+  return `player-${normalizedSeed || 'alpha'}`
+}
+
+function formatMetricValue(value) {
+  return String(value).padStart(2, '0')
+}
+
 function App() {
   const [activeView, setActiveView] = useState('home')
   const deferredView = useDeferredValue(activeView)
@@ -83,19 +100,31 @@ function App() {
     'Apply VIP25, SQUAD15, or NIGHT10 to unlock instant savings.',
   )
   const [bookingConfirmation, setBookingConfirmation] = useState(null)
-  const [tournamentForm, setTournamentForm] = useState(initialTournamentForm)
-  const [tournamentPass, setTournamentPass] = useState(null)
   const [profile, setProfile] = useState(defaultProfile)
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [selectedTournamentId, setSelectedTournamentId] = useState(tournaments[0].id)
+  const [tournamentForm, setTournamentForm] = useState(() => createTournamentForm(defaultProfile))
+  const [tournamentRegistrations, setTournamentRegistrations] = useState([])
+  const [latestTournamentRegistration, setLatestTournamentRegistration] = useState(null)
+  const [showTournamentAuthPrompt, setShowTournamentAuthPrompt] = useState(false)
+  const [isTournamentModalOpen, setIsTournamentModalOpen] = useState(false)
+  const [isTournamentSuccessOpen, setIsTournamentSuccessOpen] = useState(false)
+  const [pendingTournamentIntent, setPendingTournamentIntent] = useState(null)
+  const [tournamentErrorMessage, setTournamentErrorMessage] = useState('')
+  const [isTournamentSubmitting, setIsTournamentSubmitting] = useState(false)
   const [loginForm, setLoginForm] = useState(initialLoginForm)
   const [signupForm, setSignupForm] = useState(initialSignupForm)
+  const [authFeedback, setAuthFeedback] = useState({
+    message: '',
+    tone: 'neutral',
+  })
 
   const selectedSetup =
     setups.find((setup) => setup.id === bookingForm.setupId) ?? setups[0]
   const selectedSlot =
     timeSlots.find((slot) => slot.id === bookingForm.slotId) ?? timeSlots[0]
   const selectedTournament =
-    tournaments.find((tournament) => tournament.id === tournamentForm.tournamentId) ??
-    tournaments[0]
+    tournaments.find((tournament) => tournament.id === selectedTournamentId) ?? tournaments[0]
 
   const baseAmount = selectedSetup.price * selectedSlot.hours
   const playerCharge = Math.max(bookingForm.players - selectedSetup.includedPlayers, 0) * 149
@@ -115,8 +144,33 @@ function App() {
     dateLabel,
   }
 
+  const seededTournamentEntries =
+    profile.id === defaultProfile.id ? userDashboardSeed.tournaments : []
+
+  const dashboardBookings = bookingConfirmation
+    ? [
+        {
+          id: bookingConfirmation.id,
+          setup: bookingConfirmation.setup,
+          date: bookingConfirmation.dateLabel,
+          slot: bookingConfirmation.slotLabel,
+          status: 'Just booked',
+          total: `Rs.${bookingConfirmation.total}`,
+        },
+        ...userDashboardSeed.bookings,
+      ]
+    : userDashboardSeed.bookings
+
+  const dashboardTournaments = [...tournamentRegistrations, ...seededTournamentEntries]
+
   const dashboardData = {
     ...userDashboardSeed,
+    stats: [
+      { label: 'Active bookings', value: formatMetricValue(dashboardBookings.length) },
+      { label: 'Tournament entries', value: formatMetricValue(dashboardTournaments.length) },
+      userDashboardSeed.stats[2],
+      userDashboardSeed.stats[3],
+    ],
     paymentHistory: [
       ...(bookingConfirmation
         ? [
@@ -126,17 +180,6 @@ function App() {
               amount: `Rs.${bookingConfirmation.total}`,
               mode: bookingConfirmation.paymentMethod,
               date: bookingConfirmation.dateLabel,
-            },
-          ]
-        : []),
-      ...(tournamentPass
-        ? [
-            {
-              id: `PAY-${tournamentPass.id.slice(-4)}`,
-              label: `${tournamentPass.title} entry fee`,
-              amount: `Rs.${tournamentPass.fee}`,
-              mode: tournamentPass.paymentMethod,
-              date: tournamentPass.date,
             },
           ]
         : []),
@@ -177,10 +220,78 @@ function App() {
     return () => window.cancelAnimationFrame(frame)
   }, [deferredView, pendingSection])
 
+  useEffect(() => {
+    if (!isLoggedIn || !profile.id) {
+      return
+    }
+
+    let isCancelled = false
+
+    async function loadRegistrations() {
+      const savedRegistrations = await fetchTournamentRegistrations(profile.id)
+
+      if (!isCancelled) {
+        setTournamentRegistrations(savedRegistrations)
+      }
+    }
+
+    loadRegistrations()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [isLoggedIn, profile.id])
+
+  useEffect(() => {
+    const isAnyTournamentModalOpen =
+      showTournamentAuthPrompt || isTournamentModalOpen || isTournamentSuccessOpen
+
+    if (!isAnyTournamentModalOpen || typeof document === 'undefined' || typeof window === 'undefined') {
+      return
+    }
+
+    const previousOverflow = document.body.style.overflow
+
+    document.body.style.overflow = 'hidden'
+
+    function handleEscapeKey(event) {
+      if (event.key !== 'Escape') {
+        return
+      }
+
+      if (isTournamentSuccessOpen) {
+        setIsTournamentSuccessOpen(false)
+        return
+      }
+
+      if (isTournamentModalOpen) {
+        setIsTournamentModalOpen(false)
+        setTournamentErrorMessage('')
+        return
+      }
+
+      if (showTournamentAuthPrompt) {
+        setShowTournamentAuthPrompt(false)
+        setPendingTournamentIntent(null)
+      }
+    }
+
+    window.addEventListener('keydown', handleEscapeKey)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', handleEscapeKey)
+    }
+  }, [showTournamentAuthPrompt, isTournamentModalOpen, isTournamentSuccessOpen])
+
   function handleNavigate(viewId, options = {}) {
     const nextSectionId = options.sectionId ?? null
 
     setPendingSection(nextSectionId)
+    setAuthFeedback({
+      message: '',
+      tone: 'neutral',
+    })
 
     startTransition(() => {
       setActiveView(viewId)
@@ -247,20 +358,111 @@ function App() {
     }))
   }
 
-  function handleRegisterTournament() {
-    const teamName = tournamentForm.teamName.trim() || 'Walk-in Squad'
-    const captain = tournamentForm.captain.trim() || profile.fullName
+  function openTournamentRegistration(tournamentId, profileSnapshot = profile) {
+    setSelectedTournamentId(tournamentId)
+    setShowTournamentAuthPrompt(false)
+    setIsTournamentSuccessOpen(false)
+    setTournamentErrorMessage('')
+    setTournamentForm(createTournamentForm(profileSnapshot))
+    setIsTournamentModalOpen(true)
+  }
 
-    setTournamentPass({
-      id: `PASS-${Math.floor(100 + Math.random() * 900)}`,
-      title: selectedTournament.title,
-      teamName,
-      captain,
-      checkIn: `${selectedTournament.date} at ${selectedTournament.time} - 1 hour before start`,
-      date: selectedTournament.date,
-      fee: selectedTournament.fee,
-      paymentMethod: tournamentForm.paymentMethod,
-    })
+  function handleParticipateTournament(tournamentId) {
+    setSelectedTournamentId(tournamentId)
+
+    if (!isLoggedIn) {
+      setPendingTournamentIntent({
+        tournamentId,
+        returnView: activeView,
+      })
+      setShowTournamentAuthPrompt(true)
+      return
+    }
+
+    openTournamentRegistration(tournamentId)
+  }
+
+  function handleCloseTournamentAuthPrompt() {
+    setShowTournamentAuthPrompt(false)
+    setPendingTournamentIntent(null)
+  }
+
+  function handleTournamentAuthRedirect(targetView) {
+    setShowTournamentAuthPrompt(false)
+    handleNavigate(targetView)
+  }
+
+  function handleCloseTournamentRegistration() {
+    setIsTournamentModalOpen(false)
+    setTournamentErrorMessage('')
+  }
+
+  async function handleRegisterTournament() {
+    const teamName = tournamentForm.teamName.trim()
+    const captainName = tournamentForm.captainName.trim()
+    const mobileNumber = tournamentForm.mobileNumber.trim()
+    const gameId = tournamentForm.gameId.trim()
+
+    if (!teamName || !captainName || !mobileNumber || !gameId) {
+      setTournamentErrorMessage('Please complete all required registration fields.')
+      return
+    }
+
+    if (mobileNumber.replace(/\D/g, '').length < 10) {
+      setTournamentErrorMessage('Please enter a valid mobile number for the captain.')
+      return
+    }
+
+    if (!tournamentForm.agreeToRules) {
+      setTournamentErrorMessage('Please agree to the tournament rules and regulations to continue.')
+      return
+    }
+
+    setIsTournamentSubmitting(true)
+    setTournamentErrorMessage('')
+
+    try {
+      const registration = await registerTournamentEntry(
+        {
+          userId: profile.id,
+          tournamentId: selectedTournament.id,
+          teamName,
+          captainName,
+          mobileNumber,
+          gameId,
+          agreeToRules: tournamentForm.agreeToRules,
+          profile: {
+            fullName: profile.fullName,
+            gamerTag: profile.gamerTag,
+            email: profile.email,
+            phone: profile.phone,
+          },
+        },
+        selectedTournament,
+      )
+
+      setTournamentRegistrations((current) => [
+        registration,
+        ...current.filter((item) => item.id !== registration.id),
+      ])
+      setLatestTournamentRegistration(registration)
+      setIsTournamentModalOpen(false)
+      setIsTournamentSuccessOpen(true)
+      setTournamentForm(createTournamentForm(profile))
+    } catch (error) {
+      setTournamentErrorMessage(
+        error instanceof Error
+          ? error.message
+          : 'Unable to submit registration right now. Please try again.',
+      )
+    } finally {
+      setIsTournamentSubmitting(false)
+    }
+  }
+
+  function handleViewMyTournaments() {
+    setIsTournamentSuccessOpen(false)
+    handleNavigate('dashboard')
   }
 
   function handleProfileChange(field, value) {
@@ -284,31 +486,93 @@ function App() {
     }))
   }
 
-  function handleLogin() {
-    const identity = loginForm.identity.trim()
+  function resumePendingTournamentFlow(nextProfile) {
+    const pendingIntent = pendingTournamentIntent
 
-    if (identity) {
-      setProfile((current) => ({
-        ...current,
-        email: identity.includes('@') ? identity : current.email,
-        phone: identity.includes('@') ? current.phone : identity,
-      }))
+    if (pendingIntent) {
+      setPendingTournamentIntent(null)
+      handleNavigate(pendingIntent.returnView)
+      openTournamentRegistration(pendingIntent.tournamentId, nextProfile)
+      return
     }
 
     handleNavigate('dashboard')
   }
 
-  function handleSignup() {
-    setProfile((current) => ({
-      ...current,
-      fullName: signupForm.fullName.trim() || current.fullName,
-      gamerTag: signupForm.username.trim() || current.gamerTag,
-      email: signupForm.email.trim() || current.email,
-      phone: signupForm.phone.trim() || current.phone,
-      city: signupForm.city.trim() || current.city,
-    }))
+  function handleLogin() {
+    const identity = loginForm.identity.trim()
+    const password = loginForm.password.trim()
 
-    handleNavigate('dashboard')
+    if (!identity || !password) {
+      setAuthFeedback({
+        message: 'Enter your email or mobile number and password to continue.',
+        tone: 'error',
+      })
+      return
+    }
+
+    const isDefaultAccount =
+      identity.toLowerCase() === defaultProfile.email.toLowerCase() || identity === defaultProfile.phone
+
+    const nextProfile = {
+      ...profile,
+      id: isDefaultAccount ? defaultProfile.id : createUserId(identity),
+      email: identity.includes('@') ? identity : profile.email,
+      phone: identity.includes('@') ? profile.phone : identity,
+    }
+
+    setProfile(nextProfile)
+    setIsLoggedIn(true)
+    setAuthFeedback({
+      message: '',
+      tone: 'neutral',
+    })
+    setLoginForm(initialLoginForm)
+    resumePendingTournamentFlow(nextProfile)
+  }
+
+  function handleSignup() {
+    const fullName = signupForm.fullName.trim()
+    const username = signupForm.username.trim()
+    const email = signupForm.email.trim()
+    const phone = signupForm.phone.trim()
+    const password = signupForm.password.trim()
+    const confirmPassword = signupForm.confirmPassword.trim()
+
+    if (!fullName || !username || !email || !phone || !password || !confirmPassword) {
+      setAuthFeedback({
+        message: 'Complete the signup form before creating your account.',
+        tone: 'error',
+      })
+      return
+    }
+
+    if (password !== confirmPassword) {
+      setAuthFeedback({
+        message: 'Password and confirm password must match.',
+        tone: 'error',
+      })
+      return
+    }
+
+    const nextProfile = {
+      ...profile,
+      id: createUserId(username || email),
+      fullName,
+      gamerTag: username,
+      email,
+      phone,
+      city: signupForm.city.trim() || profile.city,
+    }
+
+    setProfile(nextProfile)
+    setIsLoggedIn(true)
+    setAuthFeedback({
+      message: '',
+      tone: 'neutral',
+    })
+    setSignupForm(initialSignupForm)
+    resumePendingTournamentFlow(nextProfile)
   }
 
   function renderView() {
@@ -346,11 +610,7 @@ function App() {
       return (
         <TournamentView
           tournaments={tournaments}
-          tournamentForm={tournamentForm}
-          selectedTournament={selectedTournament}
-          tournamentPass={tournamentPass}
-          onUpdateField={handleTournamentField}
-          onRegister={handleRegisterTournament}
+          onParticipateTournament={handleParticipateTournament}
         />
       )
     }
@@ -375,6 +635,13 @@ function App() {
           mode="login"
           loginForm={loginForm}
           signupForm={signupForm}
+          feedbackMessage={authFeedback.message}
+          feedbackTone={authFeedback.tone}
+          contextNote={
+            pendingTournamentIntent
+              ? `Login to continue your ${selectedTournament.title} registration.`
+              : ''
+          }
           onLoginField={handleLoginField}
           onSignupField={handleSignupField}
           onSubmitLogin={handleLogin}
@@ -390,6 +657,13 @@ function App() {
           mode="signup"
           loginForm={loginForm}
           signupForm={signupForm}
+          feedbackMessage={authFeedback.message}
+          feedbackTone={authFeedback.tone}
+          contextNote={
+            pendingTournamentIntent
+              ? `Create your account to continue your ${selectedTournament.title} registration.`
+              : ''
+          }
           onLoginField={handleLoginField}
           onSignupField={handleSignupField}
           onSubmitLogin={handleLogin}
@@ -403,8 +677,8 @@ function App() {
       return (
         <UserDashboardView
           dashboard={dashboardData}
-          bookingConfirmation={bookingConfirmation}
-          tournamentPass={tournamentPass}
+          bookings={dashboardBookings}
+          tournaments={dashboardTournaments}
           profile={profile}
           onProfileChange={handleProfileChange}
         />
@@ -418,7 +692,7 @@ function App() {
           offers={offers}
           setups={setups}
           bookingConfirmation={bookingConfirmation}
-          tournamentPass={tournamentPass}
+          latestTournamentRegistration={latestTournamentRegistration}
         />
       )
     }
@@ -435,7 +709,7 @@ function App() {
         socialLinks={socialLinks}
         onNavigate={handleNavigate}
         onSelectSetup={(setupId) => handleBookingField('setupId', setupId)}
-        onSelectTournament={(tournamentId) => handleTournamentField('tournamentId', tournamentId)}
+        onParticipateTournament={handleParticipateTournament}
       />
     )
   }
@@ -445,12 +719,46 @@ function App() {
       <div className="ambient ambient-left"></div>
       <div className="ambient ambient-right"></div>
       <CursorEffect />
-      <Navigation activeView={activeView} onNavigate={handleNavigate} />
+      <Navigation
+        activeView={activeView}
+        isLoggedIn={isLoggedIn}
+        profile={profile}
+        onNavigate={handleNavigate}
+      />
       <main>
         <div key={deferredView} className="page-transition-shell" data-view={deferredView}>
           {renderView()}
         </div>
       </main>
+
+      {showTournamentAuthPrompt ? (
+        <TournamentAuthPromptModal
+          tournament={selectedTournament}
+          onClose={handleCloseTournamentAuthPrompt}
+          onLogin={() => handleTournamentAuthRedirect('login')}
+          onCreateAccount={() => handleTournamentAuthRedirect('signup')}
+        />
+      ) : null}
+
+      {isTournamentModalOpen ? (
+        <TournamentRegistrationModal
+          tournament={selectedTournament}
+          form={tournamentForm}
+          errorMessage={tournamentErrorMessage}
+          isSubmitting={isTournamentSubmitting}
+          onChange={handleTournamentField}
+          onClose={handleCloseTournamentRegistration}
+          onSubmit={handleRegisterTournament}
+        />
+      ) : null}
+
+      {isTournamentSuccessOpen ? (
+        <TournamentSuccessModal
+          registration={latestTournamentRegistration}
+          onClose={() => setIsTournamentSuccessOpen(false)}
+          onViewTournaments={handleViewMyTournaments}
+        />
+      ) : null}
     </div>
   )
 }
